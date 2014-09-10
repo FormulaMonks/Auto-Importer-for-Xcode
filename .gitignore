@@ -34,7 +34,5 @@ DerivedData
 *.hmap
 *.xccheckout
 AppleDoc
-#CocoaPods
-Pods
 
 project.xcworkspace/
