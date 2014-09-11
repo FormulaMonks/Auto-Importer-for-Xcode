@@ -109,6 +109,9 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
         NSString *selection = [[currentTextView string] substringWithRange:range];
         if (_headersBySymbols[selection]) {
             NSLog(@"symbol %@ found in %@", selection, _headersBySymbols[selection]);
+            MHFile *file = [MHFile fileWithCurrentFilePath];
+            [file addImport:statement];
+
         } else {
             NSLog(@"symbol %@ not found", selection);
         }
