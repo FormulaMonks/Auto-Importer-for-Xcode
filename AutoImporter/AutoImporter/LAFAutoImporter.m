@@ -11,6 +11,8 @@
 #import "XCFXcodePrivate.h"
 #import "XCWorkspace.h"
 #import "MHXcodeDocumentNavigator.h"
+#import "XCSourceFile.h"
+#import "XCSourceFile+Path.h"
 
 static LAFAutoImporter *sharedPlugin;
 
@@ -128,9 +130,36 @@ static LAFAutoImporter *sharedPlugin;
 - (void)updateProject:(XCProject *)project {
 //    [self removeProjectWithPath:project.filePath];
 //    
-    XCWorkspace *workspace = self.currentWorkspace;
+//    XCWorkspace *workspace = self.currentWorkspace;
     
-    NSLog(workspace.projects);
+    NSLog(@"updating project %@", [project filePath]);
+    
+    for (XCSourceFile *header in project.headerFiles) {
+        NSString *content = [NSString stringWithContentsOfFile:[header fullPath] encoding:NSUTF8StringEncoding error:nil];
+        
+        if ([content length] == 0) {
+            NSLog(@"not reading %@", [header fullPath]);
+            continue;
+        }
+
+        NSError *error = nil;
+        NSRegularExpression *regex = [NSRegularExpression
+                                      regularExpressionWithPattern:@"@interface\\s+(\\w+)"
+                                      options:NSRegularExpressionCaseInsensitive
+                                      error:&error];
+        
+        if (error) {
+            NSLog(@"error: %@", error);
+            continue;
+        }
+        
+        [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+            NSRange matchRange = [match rangeAtIndex:1];
+            NSString *matchString = [content substringWithRange:matchRange];
+            NSLog(@"CLASS %@ for header %@", matchString, [[header fullPath] lastPathComponent]);
+        }];
+    }
+    
 //    NSMapTable *projectsMapTable = [self mapTableForWorkspace:workspace
 //                                                         kind:MHHeaderCacheHeaderKindProjects];
 //    [projectsMapTable setObject:project.headerFiles

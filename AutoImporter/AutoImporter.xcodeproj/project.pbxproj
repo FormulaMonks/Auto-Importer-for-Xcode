@@ -28,6 +28,7 @@
 		E26F413A19C0C56B00527019 /* XCTarget+XCProject.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F413219C0C56B00527019 /* XCTarget+XCProject.m */; };
 		E26F413B19C0C56B00527019 /* XCBuildSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F413419C0C56B00527019 /* XCBuildSettings.m */; };
 		E26F413C19C0C56B00527019 /* XCWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F413619C0C56B00527019 /* XCWorkspace.m */; };
+		E2F5DFF919C1EBBA00666067 /* XCSourceFile+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,8 @@
 		E26F413419C0C56B00527019 /* XCBuildSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCBuildSettings.m; sourceTree = "<group>"; };
 		E26F413519C0C56B00527019 /* XCWorkspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCWorkspace.h; sourceTree = "<group>"; };
 		E26F413619C0C56B00527019 /* XCWorkspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCWorkspace.m; sourceTree = "<group>"; };
+		E2F5DFF719C1EBBA00666067 /* XCSourceFile+Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCSourceFile+Path.h"; sourceTree = "<group>"; };
+		E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCSourceFile+Path.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +185,8 @@
 				E26F411019C0C52300527019 /* NSTextView+Operations.m */,
 				E26F411119C0C52300527019 /* NSView+Dumping.h */,
 				E26F411219C0C52300527019 /* NSView+Dumping.m */,
+				E2F5DFF719C1EBBA00666067 /* XCSourceFile+Path.h */,
+				E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -319,6 +324,7 @@
 				E26F40EB19C0B95500527019 /* LAFAutoImporter.m in Sources */,
 				E26F413A19C0C56B00527019 /* XCTarget+XCProject.m in Sources */,
 				E26F411919C0C52300527019 /* DVTSourceTextStorage+Operations.m in Sources */,
+				E2F5DFF919C1EBBA00666067 /* XCSourceFile+Path.m in Sources */,
 				E26F411E19C0C52300527019 /* NSFileManager+Headers.m in Sources */,
 				E26F413B19C0C56B00527019 /* XCBuildSettings.m in Sources */,
 				E26F412219C0C52300527019 /* NSString+Files.m in Sources */,
