@@ -6,6 +6,7 @@
 //    Copyright (c) 2014 luisfloreani.com. All rights reserved.
 //
 
+#import <Carbon/Carbon.h>
 #import "LAFAutoImporter.h"
 #import "XCProject.h"
 #import "XCFXcodePrivate.h"
@@ -18,10 +19,27 @@ static LAFAutoImporter *sharedPlugin;
 
 @interface LAFAutoImporter()
 @property (nonatomic, strong) NSMutableDictionary *workspaceCacheDictionary;
+@property (nonatomic, strong) NSMutableDictionary *headersBySymbols;
 @property (nonatomic, strong) NSBundle *bundle;
 @end
 
 @implementation LAFAutoImporter
+
+OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void *userData) {
+    
+    EventHotKeyID hkRef;
+    GetEventParameter(anEvent,kEventParamDirectObject,typeEventHotKeyID,NULL,sizeof(hkRef),NULL,&hkRef);
+    switch (hkRef.id) {
+        case 1:
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LAFShowHeaders"
+                                                                object:nil];
+        }
+            break;
+            
+    }
+    return noErr;
+}
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
@@ -38,6 +56,7 @@ static LAFAutoImporter *sharedPlugin;
 {
     if (self = [super init]) {
         _workspaceCacheDictionary = [NSMutableDictionary new];
+        _headersBySymbols = [NSMutableDictionary new];
 
         // reference to plugin's bundle, for resource acccess
         self.bundle = plugin;
@@ -65,9 +84,52 @@ static LAFAutoImporter *sharedPlugin;
                                selector:@selector(projectDidChange:)
                                    name:@"PBXProjectDidChangeNotification"
                                  object:nil];
+        
+        [notificationCenter addObserver:self
+                               selector:@selector(projectDidClose:)
+                                   name:@"PBXProjectDidCloseNotification"
+                                 object:nil];
+
+        
+        [self loadKeyboardHandler];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(showHeaders:)
+                                                     name:@"LAFShowHeaders"
+                                                   object:nil];
 
     }
     return self;
+}
+
+- (void)showHeaders:(NSNotification *)notif {
+    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+    NSRange range = currentTextView.selectedRange;
+    if (range.length > 0) {
+        NSString *selection = [[currentTextView string] substringWithRange:range];
+        if (_headersBySymbols[selection]) {
+            NSLog(@"symbol %@ found in %@", selection, _headersBySymbols[selection]);
+        } else {
+            NSLog(@"symbol %@ not found", selection);
+        }
+    } else {
+        NSLog(@"No text selection");
+    }
+}
+
+- (void)loadKeyboardHandler {
+    EventHotKeyRef myHotKeyRef;
+    EventHotKeyID myHotKeyID;
+    EventTypeSpec eventType;
+    
+    eventType.eventClass=kEventClassKeyboard;
+    eventType.eventKind=kEventHotKeyPressed;
+    InstallApplicationEventHandler(&myHotKeyHandler,1,&eventType,NULL,NULL);
+    
+    myHotKeyID.signature='mhk1';
+    myHotKeyID.id=1;
+    
+    RegisterEventHotKey(kVK_ANSI_H, cmdKey+controlKey, myHotKeyID, GetApplicationEventTarget(), 0, &myHotKeyRef);
 }
 
 #pragma clang diagnostic push
@@ -82,6 +144,10 @@ static LAFAutoImporter *sharedPlugin;
 }
 
 #pragma clang diagnostic pop
+
+- (void)projectDidClose:(NSNotification *)notification {
+    [_headersBySymbols removeAllObjects];
+}
 
 - (void)projectDidChange:(NSNotification *)notification {
     NSString *filePath = [self filePathForProjectFromNotification:notification];
@@ -143,8 +209,12 @@ static LAFAutoImporter *sharedPlugin;
         }
 
         NSError *error = nil;
+        NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
+//        NSString *classDefinition = @"@interface\\s+([a-z][a-z0-9]*)";
+//        NSString *categoryDefinition = @"@interface\\s+(\\w+)\\s+\(\\w";
+//        NSString *protocolDefinition = @"@protocol\\s+(\\w+)";
         NSRegularExpression *regex = [NSRegularExpression
-                                      regularExpressionWithPattern:@"@interface\\s+(\\w+)"
+                                      regularExpressionWithPattern:classDefinition
                                       options:NSRegularExpressionCaseInsensitive
                                       error:&error];
         
@@ -156,21 +226,11 @@ static LAFAutoImporter *sharedPlugin;
         [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
             NSRange matchRange = [match rangeAtIndex:1];
             NSString *matchString = [content substringWithRange:matchRange];
-            NSLog(@"CLASS %@ for header %@", matchString, [[header fullPath] lastPathComponent]);
+            _headersBySymbols[matchString] = [[header fullPath] lastPathComponent];
         }];
     }
     
-//    NSMapTable *projectsMapTable = [self mapTableForWorkspace:workspace
-//                                                         kind:MHHeaderCacheHeaderKindProjects];
-//    [projectsMapTable setObject:project.headerFiles
-//                         forKey:project];
-//    
-//    NSArray *frameworkHeaders = [self frameworkHeadersForProject:project];
-//    
-//    NSMapTable *frameworksMapTable = [self mapTableForWorkspace:workspace
-//                                                           kind:MHHeaderCacheHeaderKindFrameworks];
-//    [frameworksMapTable setObject:frameworkHeaders
-//                           forKey:project];
+    NSLog(@"%@", _headersBySymbols);
 }
 
 - (void)updateProjectWithPath:(NSString *)path {
