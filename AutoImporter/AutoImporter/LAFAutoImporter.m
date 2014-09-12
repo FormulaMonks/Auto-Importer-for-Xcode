@@ -14,6 +14,10 @@
 #import "MHXcodeDocumentNavigator.h"
 #import "XCSourceFile.h"
 #import "XCSourceFile+Path.h"
+#import "NSString+Extensions.h"
+#import "DVTSourceTextStorage+Operations.h"
+
+NSString * const LAFAddImportOperationImportRegexPattern = @".*#.*(import|include).*[\",<].*[\",>]";
 
 static LAFAutoImporter *sharedPlugin;
 
@@ -102,15 +106,82 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     return self;
 }
 
+- (void)addImport:(NSString *)statement {
+    DVTSourceTextStorage *textStorage = [self currentTextStorage];
+    NSInteger lastLine = [self appropriateLine:textStorage statement:statement];
+    
+    if (lastLine != NSNotFound) {
+        NSString *importString = [NSString stringWithFormat:@"%@\n", statement];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [textStorage mhInsertString:importString
+                                 atLine:lastLine+1];
+        });
+    }}
+
+- (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement {
+    __block NSUInteger lineNumber = NSNotFound;
+    __block NSUInteger currentLineNumber = 0;
+    __block BOOL foundDuplicate = NO;
+    [source.string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+        if ([self isImportString:line]) {
+            if ([line isEqual:statement]) {
+                foundDuplicate = YES;
+                *stop = YES;
+                return;
+            }
+            lineNumber = currentLineNumber;
+        }
+        currentLineNumber++;
+    }];
+    
+    if (foundDuplicate) return NSNotFound;
+    
+    //if no imports are present find the first new line.
+    if (lineNumber == NSNotFound) {
+        currentLineNumber = 0;
+        [source.string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+            if (![line mh_isWhitespaceOrNewline]) {
+                currentLineNumber++;
+            }
+            else {
+                lineNumber = currentLineNumber;
+                *stop = YES;
+            }
+        }];
+    }
+    
+    return lineNumber;
+}
+
+- (NSRegularExpression *)importRegex {
+    static NSRegularExpression *_regex = nil;
+    if (!_regex) {
+        NSError *error = nil;
+        _regex = [[NSRegularExpression alloc] initWithPattern:LAFAddImportOperationImportRegexPattern
+                                                      options:0
+                                                        error:&error];
+    }
+    return _regex;
+}
+
+- (BOOL)isImportString:(NSString *)string {
+    NSRegularExpression *regex = [self importRegex];
+    NSInteger numberOfMatches = [regex numberOfMatchesInString:string
+                                                       options:0
+                                                         range:NSMakeRange(0, string.length)];
+    return numberOfMatches > 0;
+}
+
 - (void)showHeaders:(NSNotification *)notif {
     NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
     NSRange range = currentTextView.selectedRange;
     if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
-        if (_headersBySymbols[selection]) {
-            NSLog(@"symbol %@ found in %@", selection, _headersBySymbols[selection]);
-//            MHFile *file = [MHFile fileWithCurrentFilePath];
-//            [file addImport:statement];
+        NSString *header = _headersBySymbols[selection];
+        if (header) {
+            NSLog(@"symbol %@ found in %@", selection, header);
+            [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
         } else {
             NSLog(@"symbol %@ not found", selection);
         }
@@ -118,6 +189,15 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
         NSLog(@"No text selection");
     }
 }
+
+- (DVTSourceTextStorage *)currentTextStorage {
+    if (![[MHXcodeDocumentNavigator currentEditor] isKindOfClass:NSClassFromString(@"IDESourceCodeEditor")]) {
+        return nil;
+    }
+    NSTextView *textView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+    return (DVTSourceTextStorage*)textView.textStorage;
+}
+
 
 - (void)loadKeyboardHandler {
     EventHotKeyRef myHotKeyRef;
