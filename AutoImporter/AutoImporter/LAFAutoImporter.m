@@ -208,7 +208,7 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     eventType.eventKind=kEventHotKeyPressed;
     InstallApplicationEventHandler(&myHotKeyHandler,1,&eventType,NULL,NULL);
     
-    myHotKeyID.signature='mhk1';
+    myHotKeyID.signature='lak1';
     myHotKeyID.id=1;
     
     RegisterEventHotKey(kVK_ANSI_H, cmdKey+controlKey, myHotKeyID, GetApplicationEventTarget(), 0, &myHotKeyRef);
