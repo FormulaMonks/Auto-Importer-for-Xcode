@@ -1,12 +1,9 @@
 TODO:
 
-- fix path on some projects (citizenme?)
+- fix: path on some projects (citizenme?)
+- fix: now is adding classes when a category is found. e.g: NSArray is added as a header when NSArray (Stack) is found
 - re-parse on header file change
 - add framework headers
-
-QUESTIONS:
-
-- ?
 
 PROJECT PATHS:
 
