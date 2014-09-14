@@ -1,2 +1,14 @@
+TODO:
+
+- fix path on some projects (citizenme?)
+- re-parse on header file change
+- add framework headers
+
 QUESTIONS:
 
+- ?
+
+PROJECT PATHS:
+
+/Users/lucho/Projects/AutoImporter/TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj
+/Users/lucho/Projects/citizenme/iOS-App-a2/CitizenMeV2.xcworkspace

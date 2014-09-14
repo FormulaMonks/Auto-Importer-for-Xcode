@@ -183,7 +183,7 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
         NSString *selection = [[currentTextView string] substringWithRange:range];
         NSString *header = _headersBySymbols[selection];
         if (header) {
-            text = [NSString stringWithFormat:@"Symbol found!"];
+            text = [NSString stringWithFormat:@"Header '%@' added!", header];
             color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
             [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
         } else {
