@@ -16,6 +16,7 @@
 #import "XCSourceFile+Path.h"
 #import "NSString+Extensions.h"
 #import "DVTSourceTextStorage+Operations.h"
+#import "NSTextView+Operations.h"
 
 NSString * const LAFAddImportOperationImportRegexPattern = @".*#.*(import|include).*[\",<].*[\",>]";
 
@@ -176,18 +177,50 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
 - (void)showHeaders:(NSNotification *)notif {
     NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
     NSRange range = currentTextView.selectedRange;
+    NSString *text = nil;
+    NSColor *color = nil;
     if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
         NSString *header = _headersBySymbols[selection];
         if (header) {
-            NSLog(@"symbol %@ found in %@", selection, header);
+            text = [NSString stringWithFormat:@"Symbol found!"];
+            color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
             [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
         } else {
-            NSLog(@"symbol %@ not found", selection);
+            text = [NSString stringWithFormat:@"Symbol '%@' not found", selection];
+            color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
         }
     } else {
-        NSLog(@"No text selection");
+        text = [NSString stringWithFormat:@"No text selection"];
+        color = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
     }
+    
+    NSLog(@"%@", text);
+    NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
+    NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
+    NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
+    NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
+    keyRectOnTextView.size.width = 1;
+    
+    NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y - 22, 0, 0)];
+    [field setBackgroundColor:color];
+    [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
+    [field setStringValue:text];
+    [field sizeToFit];
+    [field setBordered:NO];
+    [field setEditable:NO];
+    
+    [currentTextView addSubview:field];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setCompletionHandler:^{
+            [field removeFromSuperview];
+        }];
+        [[NSAnimationContext currentContext] setDuration:1.0];
+        [[field animator] setAlphaValue:0.0];
+        [NSAnimationContext endGrouping];
+    });
 }
 
 - (DVTSourceTextStorage *)currentTextStorage {
