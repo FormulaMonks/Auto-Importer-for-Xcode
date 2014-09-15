@@ -17,6 +17,7 @@
 #import "NSString+Extensions.h"
 #import "DVTSourceTextStorage+Operations.h"
 #import "NSTextView+Operations.h"
+#import "LAFProjectHeaderCache.h"
 
 NSString * const LAFAddImportOperationImportRegexPattern = @".*#.*(import|include).*[\",<].*[\",>]";
 
@@ -24,7 +25,7 @@ static LAFAutoImporter *sharedPlugin;
 
 @interface LAFAutoImporter()
 @property (nonatomic, strong) NSMutableDictionary *workspaceCacheDictionary;
-@property (nonatomic, strong) NSMutableDictionary *headersBySymbols;
+@property (nonatomic, strong) NSMutableArray *projectHeaders;
 @property (nonatomic, strong) NSBundle *bundle;
 @end
 
@@ -61,7 +62,7 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
 {
     if (self = [super init]) {
         _workspaceCacheDictionary = [NSMutableDictionary new];
-        _headersBySymbols = [NSMutableDictionary new];
+        _projectHeaders = [NSMutableArray new];
 
         // reference to plugin's bundle, for resource acccess
         self.bundle = plugin;
@@ -106,7 +107,8 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
             [textStorage mhInsertString:importString
                                  atLine:lastLine+1];
         });
-    }}
+    }
+}
 
 - (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement {
     __block NSUInteger lineNumber = NSNotFound;
@@ -169,46 +171,51 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     NSColor *color = nil;
     if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
-        NSString *header = _headersBySymbols[selection];
-        if (header) {
-            text = [NSString stringWithFormat:@"Header '%@' added!", header];
-            color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
-            [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
-        } else {
-            text = [NSString stringWithFormat:@"Symbol '%@' not found", selection];
-            color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
+        for (LAFProjectHeaderCache *headers in _projectHeaders) {
+            NSString *header = [headers headerForSymbol:selection];
+            if (header) {
+                text = [NSString stringWithFormat:@"Header '%@' added!", header];
+                color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
+                [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
+                
+                break;
+            } else {
+                text = [NSString stringWithFormat:@"Symbol '%@' not found", selection];
+                color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
+            }
         }
     } else {
         text = [NSString stringWithFormat:@"No text selection"];
         color = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
     }
     
-    NSLog(@"%@", text);
-    NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
-    NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
-    NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
-    NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
-    keyRectOnTextView.size.width = 1;
-    
-    NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y - 22, 0, 0)];
-    [field setBackgroundColor:color];
-    [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
-    [field setStringValue:text];
-    [field sizeToFit];
-    [field setBordered:NO];
-    [field setEditable:NO];
-    
-    [currentTextView addSubview:field];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setCompletionHandler:^{
-            [field removeFromSuperview];
-        }];
-        [[NSAnimationContext currentContext] setDuration:1.0];
-        [[field animator] setAlphaValue:0.0];
-        [NSAnimationContext endGrouping];
-    });
+    if (text) {
+        NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
+        NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
+        NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
+        NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
+        keyRectOnTextView.size.width = 1;
+
+        NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y - 22, 0, 0)];
+        [field setBackgroundColor:color];
+        [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
+        [field setStringValue:text];
+        [field sizeToFit];
+        [field setBordered:NO];
+        [field setEditable:NO];
+        
+        [currentTextView addSubview:field];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [NSAnimationContext beginGrouping];
+            [[NSAnimationContext currentContext] setCompletionHandler:^{
+                [field removeFromSuperview];
+            }];
+            [[NSAnimationContext currentContext] setDuration:1.0];
+            [[field animator] setAlphaValue:0.0];
+            [NSAnimationContext endGrouping];
+        });
+    }
 }
 
 - (DVTSourceTextStorage *)currentTextStorage {
@@ -249,7 +256,18 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
 #pragma clang diagnostic pop
 
 - (void)projectDidClose:(NSNotification *)notification {
-    [_headersBySymbols removeAllObjects];
+    NSString *path = [self filePathForProjectFromNotification:notification];
+    LAFProjectHeaderCache *toRemove = nil;
+    for (LAFProjectHeaderCache *headers in _projectHeaders) {
+        if ([headers.filePath isEqualToString:path]) {
+            toRemove = headers;
+            break;
+        }
+    }
+    
+    if (toRemove) {
+        [_projectHeaders removeObject:toRemove];
+    }
 }
 
 - (void)projectDidChange:(NSNotification *)notification {
@@ -296,50 +314,13 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     return workspace;
 }
 
-- (void)updateProject:(XCProject *)project {
-//    [self removeProjectWithPath:project.filePath];
-//    
-//    XCWorkspace *workspace = self.currentWorkspace;
-    
-    NSLog(@"updating project %@", [project filePath]);
-    
-    for (XCSourceFile *header in project.headerFiles) {
-        NSString *content = [NSString stringWithContentsOfFile:[header fullPath] encoding:NSUTF8StringEncoding error:nil];
-        
-        if ([content length] == 0) {
-            NSLog(@"not reading %@", [header fullPath]);
-            continue;
-        }
-
-        NSError *error = nil;
-        NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
-//        NSString *classDefinition = @"@interface\\s+([a-z][a-z0-9]*)";
-//        NSString *categoryDefinition = @"@interface\\s+(\\w+)\\s+\(\\w";
-//        NSString *protocolDefinition = @"@protocol\\s+(\\w+)";
-        NSRegularExpression *regex = [NSRegularExpression
-                                      regularExpressionWithPattern:classDefinition
-                                      options:NSRegularExpressionCaseInsensitive
-                                      error:&error];
-        
-        if (error) {
-            NSLog(@"error: %@", error);
-            continue;
-        }
-        
-        [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-            NSRange matchRange = [match rangeAtIndex:1];
-            NSString *matchString = [content substringWithRange:matchRange];
-            _headersBySymbols[matchString] = [[header fullPath] lastPathComponent];
-        }];
-    }
-    
-    NSLog(@"%@", _headersBySymbols);
-}
-
 - (void)updateProjectWithPath:(NSString *)path {
-    if(![[NSFileManager defaultManager] fileExistsAtPath:path]) return;
-    XCProject *project = [XCProject projectWithFilePath:path];
-    [self updateProject:project];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSLog(@"project path not found %@", path);
+        return;
+    }
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:path];
+    [_projectHeaders addObject:headers];
 }
 
 
