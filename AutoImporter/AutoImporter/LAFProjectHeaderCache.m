@@ -36,38 +36,67 @@
     return _headersBySymbols[symbol];
 }
 
-- (void)updateProject:(XCProject *)project {
-    NSLog(@"updating project %@", [project filePath]);
+- (NSArray *)fullPathsForFiles:(NSSet *)fileNames inDirectory:(NSString *)directoryPath {
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:directoryPath];
     
-    for (XCSourceFile *header in project.headerFiles) {
-        NSString *content = [NSString stringWithContentsOfFile:[header fullPath] encoding:NSUTF8StringEncoding error:nil];
-        
-        if ([content length] == 0) {
-            NSLog(@"not reading %@", [header fullPath]);
-            continue;
+    NSMutableArray *fullPaths = [NSMutableArray array];
+    
+    NSString *filePath = nil;
+    while ( (filePath = [enumerator nextObject] ) != nil ){
+        if ([fileNames containsObject:[filePath lastPathComponent]]) {
+            [fullPaths addObject:[directoryPath stringByAppendingPathComponent:filePath]];
         }
-        
-        NSError *error = nil;
-        NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
-        //        NSString *classDefinition = @"@interface\\s+([a-z][a-z0-9]*)";
-        //        NSString *categoryDefinition = @"@interface\\s+(\\w+)\\s+\(\\w";
-        //        NSString *protocolDefinition = @"@protocol\\s+(\\w+)";
-        NSRegularExpression *regex = [NSRegularExpression
-                                      regularExpressionWithPattern:classDefinition
-                                      options:NSRegularExpressionCaseInsensitive
-                                      error:&error];
-        
-        if (error) {
-            NSLog(@"error: %@", error);
-            continue;
-        }
-        
-        [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-            NSRange matchRange = [match rangeAtIndex:1];
-            NSString *matchString = [content substringWithRange:matchRange];
-            _headersBySymbols[matchString] = [[header fullPath] lastPathComponent];
-        }];
     }
+    
+    return fullPaths;
+}
+
+- (void)processHeaderPath:(NSString *)headerPath {
+    NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
+    
+    NSError *error = nil;
+    NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
+//    NSString *classDefinition = @"@interface\\s+([a-z][a-z0-9]*)";
+//    NSString *categoryDefinition = @"@interface\\s+(\\w+)\\s+\(\\w";
+//    NSString *protocolDefinition = @"@protocol\\s+(\\w+)";
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:classDefinition
+                                  options:NSRegularExpressionCaseInsensitive
+                                  error:&error];
+    
+    if (error) {
+        NSLog(@"error: %@", error);
+    }
+    
+    [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+        NSRange matchRange = [match rangeAtIndex:1];
+        NSString *matchString = [content substringWithRange:matchRange];
+        _headersBySymbols[matchString] = [headerPath lastPathComponent];
+    }];
+}
+
+- (void)updateProject:(XCProject *)project {
+    NSDate *start = [NSDate date];
+    NSMutableSet *missingFiles = [NSMutableSet set];
+    for (XCSourceFile *header in project.headerFiles) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[header fullPath]]) {
+            [self processHeaderPath:[header fullPath]];
+        } else {
+            [missingFiles addObject:[[header pathRelativeToProjectRoot] lastPathComponent]];
+        }
+    }
+    
+    NSString *projectDir = [[project filePath] stringByDeletingLastPathComponent];
+    NSArray *missingHeaderFullPaths = [self fullPathsForFiles:missingFiles inDirectory:projectDir];
+    
+    for (NSString *headerMissingFullpath in missingHeaderFullPaths) {
+        [self processHeaderPath:headerMissingFullpath];
+    }
+    
+    NSDate *methodFinish = [NSDate date];
+    NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
+    
+    NSLog(@"Parse Time for project %@: %f", [[project filePath] lastPathComponent], executionTime);
     
     NSLog(@"%@", _headersBySymbols);
 }
