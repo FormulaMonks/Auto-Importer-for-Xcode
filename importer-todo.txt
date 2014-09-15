@@ -1,5 +1,6 @@
 TODO:
 
+- fix conflict with peckham key
 - re-parse on header file change
 - when two windows (and thus two projects) are open, symbols are shared
 - index headers in background
