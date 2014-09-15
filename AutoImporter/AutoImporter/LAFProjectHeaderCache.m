@@ -55,7 +55,7 @@
     NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
     
     NSError *error = nil;
-    NSString *classDefinition = @"(?:interface|protocol)\\s+([a-z][a-z0-9_\\s*\()]+)";
+    NSString *classDefinition = @"(?:@interface|@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)";
 //    NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
     NSRegularExpression *regex = [NSRegularExpression
                                   regularExpressionWithPattern:classDefinition
@@ -63,7 +63,8 @@
                                   error:&error];
     
     if (error) {
-        NSLog(@"error: %@", error);
+        NSLog(@"processing header path error: %@", error);
+        return;
     }
     
     [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){

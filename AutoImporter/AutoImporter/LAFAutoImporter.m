@@ -96,9 +96,10 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     return self;
 }
 
-- (void)addImport:(NSString *)statement {
+- (BOOL)addImport:(NSString *)statement {
     DVTSourceTextStorage *textStorage = [self currentTextStorage];
-    NSInteger lastLine = [self appropriateLine:textStorage statement:statement];
+    BOOL duplicate = NO;
+    NSInteger lastLine = [self appropriateLine:textStorage statement:statement duplicate:&duplicate];
     
     if (lastLine != NSNotFound) {
         NSString *importString = [NSString stringWithFormat:@"%@\n", statement];
@@ -108,9 +109,11 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
                                  atLine:lastLine+1];
         });
     }
+    
+    return duplicate;
 }
 
-- (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement {
+- (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement duplicate:(BOOL *)duplicate {
     __block NSUInteger lineNumber = NSNotFound;
     __block NSUInteger currentLineNumber = 0;
     __block BOOL foundDuplicate = NO;
@@ -126,7 +129,10 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
         currentLineNumber++;
     }];
     
-    if (foundDuplicate) return NSNotFound;
+    if (foundDuplicate) {
+        *duplicate = YES;
+        return NSNotFound;
+    }
     
     //if no imports are present find the first new line.
     if (lineNumber == NSNotFound) {
@@ -174,10 +180,14 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
         for (LAFProjectHeaderCache *headers in _projectHeaders) {
             NSString *header = [headers headerForSymbol:selection];
             if (header) {
-                text = [NSString stringWithFormat:@"Header '%@' added!", header];
-                color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
-                [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
-                
+                BOOL already = [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
+                if (already) {
+                    text = [NSString stringWithFormat:@"Header '%@' already added", header];
+                    color = [NSColor colorWithRed:1.0 green:1.0 blue:0.8 alpha:1.0];
+                } else {
+                    text = [NSString stringWithFormat:@"Header '%@' added!", header];
+                    color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
+                }
                 break;
             } else {
                 text = [NSString stringWithFormat:@"Symbol '%@' not found", selection];
@@ -190,30 +200,34 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
     }
     
     if (text) {
-        NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
-        NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
-        NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
-        NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
-        keyRectOnTextView.size.width = 1;
-
-        NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y - 22, 0, 0)];
-        [field setBackgroundColor:color];
-        [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
-        [field setStringValue:text];
-        [field sizeToFit];
-        [field setBordered:NO];
-        [field setEditable:NO];
-        
-        [currentTextView addSubview:field];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [NSAnimationContext beginGrouping];
-            [[NSAnimationContext currentContext] setCompletionHandler:^{
-                [field removeFromSuperview];
-            }];
-            [[NSAnimationContext currentContext] setDuration:1.0];
-            [[field animator] setAlphaValue:0.0];
-            [NSAnimationContext endGrouping];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
+            NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
+            NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
+            NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
+            keyRectOnTextView.size.width = 1;
+            
+            NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y, 0, 0)];
+            [field setBackgroundColor:color];
+            [field setFont:currentTextView.font];
+            [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
+            [field setStringValue:text];
+            [field sizeToFit];
+            [field setBordered:NO];
+            [field setEditable:NO];
+            field.frame = CGRectOffset(field.frame, 0, - field.bounds.size.height - 3);
+            
+            [currentTextView addSubview:field];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [NSAnimationContext beginGrouping];
+                [[NSAnimationContext currentContext] setCompletionHandler:^{
+                    [field removeFromSuperview];
+                }];
+                [[NSAnimationContext currentContext] setDuration:1.0];
+                [[field animator] setAlphaValue:0.0];
+                [NSAnimationContext endGrouping];
+            });
         });
     }
 }
