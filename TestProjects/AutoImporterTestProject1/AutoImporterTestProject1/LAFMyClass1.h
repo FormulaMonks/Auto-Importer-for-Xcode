@@ -15,3 +15,7 @@
 @interface LAFMyClass1 : NSObject
 
 @end
+
+@interface LAFMyClass_1 : NSObject
+
+@end

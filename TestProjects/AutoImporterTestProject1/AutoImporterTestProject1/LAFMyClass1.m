@@ -11,3 +11,7 @@
 @implementation LAFMyClass1
 
 @end
+
+@implementation LAFMyClass_1
+
+@end

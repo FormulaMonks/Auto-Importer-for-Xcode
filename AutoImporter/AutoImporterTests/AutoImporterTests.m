@@ -33,9 +33,11 @@
 {
     LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
     XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass1"], @"LAFMyClass1.h");
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass_1"], @"LAFMyClass1.h");
     XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass2"], @"LAFMyClass2.h");
     XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass2Bis"], @"LAFMyClass2.h");
     XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyProtocol1"], @"LAFMyClass1.h");
+    XCTAssertNil([headers headerForSymbol:@"NSColor"]);
 }
 
 - (void)testGroupClassIsImported

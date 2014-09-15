@@ -55,10 +55,8 @@
     NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
     
     NSError *error = nil;
-    NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
-//    NSString *classDefinition = @"@interface\\s+([a-z][a-z0-9]*)";
-//    NSString *categoryDefinition = @"@interface\\s+(\\w+)\\s+\(\\w";
-//    NSString *protocolDefinition = @"@protocol\\s+(\\w+)";
+    NSString *classDefinition = @"(?:interface|protocol)\\s+([a-z][a-z0-9_\\s*\()]+)";
+//    NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
     NSRegularExpression *regex = [NSRegularExpression
                                   regularExpressionWithPattern:classDefinition
                                   options:NSRegularExpressionCaseInsensitive
@@ -71,7 +69,10 @@
     [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
         NSRange matchRange = [match rangeAtIndex:1];
         NSString *matchString = [content substringWithRange:matchRange];
-        _headersBySymbols[matchString] = [headerPath lastPathComponent];
+        NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
+            _headersBySymbols[matchTrim] = [headerPath lastPathComponent];
+        }
     }];
 }
 
