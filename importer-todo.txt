@@ -2,6 +2,7 @@ TODO:
 
 - fix: now is adding classes when a category is found. e.g: NSArray is added as a header when NSArray (Stack) is found
 - re-parse on header file change
+- index in background
 - add framework headers
 - write tests!
 
@@ -9,5 +10,6 @@ PROJECT PATHS:
 
 /Users/lucho/Projects/AutoImporter/TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj
 /Users/lucho/Projects/citizenme/iOS-App-a2/CitizenMeV2.xcworkspace
+/Users/lucho/Projects/citrus/CBLBrandman/src/CompetencyBasedLearningMobile/CompetencyBasedLearningMobile.xcodeproj
 
 tail -f /var/log/system.log
