@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E285675119C72B1B00E65317 /* LAFGroupClass1.m in Sources */ = {isa = PBXBuildFile; fileRef = E285675019C72B1B00E65317 /* LAFGroupClass1.m */; };
+		E285675219C72B1B00E65317 /* LAFGroupClass1.m in Sources */ = {isa = PBXBuildFile; fileRef = E285675019C72B1B00E65317 /* LAFGroupClass1.m */; };
+		E285675519C72BEA00E65317 /* LAFSubdirectoryClass1.m in Sources */ = {isa = PBXBuildFile; fileRef = E285675419C72BEA00E65317 /* LAFSubdirectoryClass1.m */; };
+		E285675619C72BEA00E65317 /* LAFSubdirectoryClass1.m in Sources */ = {isa = PBXBuildFile; fileRef = E285675419C72BEA00E65317 /* LAFSubdirectoryClass1.m */; };
 		E2E1BE9519C2116A00AAB0FC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E1BE9419C2116A00AAB0FC /* Cocoa.framework */; };
 		E2E1BE9F19C2116A00AAB0FC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E2E1BE9D19C2116A00AAB0FC /* InfoPlist.strings */; };
 		E2E1BEA119C2116A00AAB0FC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E1BEA019C2116A00AAB0FC /* main.m */; };
@@ -34,6 +38,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E285674F19C72B1B00E65317 /* LAFGroupClass1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFGroupClass1.h; sourceTree = "<group>"; };
+		E285675019C72B1B00E65317 /* LAFGroupClass1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFGroupClass1.m; sourceTree = "<group>"; };
+		E285675319C72BEA00E65317 /* LAFSubdirectoryClass1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LAFSubdirectoryClass1.h; path = Subdirectory/LAFSubdirectoryClass1.h; sourceTree = "<group>"; };
+		E285675419C72BEA00E65317 /* LAFSubdirectoryClass1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LAFSubdirectoryClass1.m; path = Subdirectory/LAFSubdirectoryClass1.m; sourceTree = "<group>"; };
 		E2E1BE9119C2116A00AAB0FC /* AutoImporterTestProject1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoImporterTestProject1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E1BE9419C2116A00AAB0FC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E2E1BE9719C2116A00AAB0FC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -82,6 +90,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E285674E19C72AF500E65317 /* LAFGroup */ = {
+			isa = PBXGroup;
+			children = (
+				E285674F19C72B1B00E65317 /* LAFGroupClass1.h */,
+				E285675019C72B1B00E65317 /* LAFGroupClass1.m */,
+			);
+			name = LAFGroup;
+			sourceTree = "<group>";
+		};
 		E2E1BE8819C2116A00AAB0FC = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +141,7 @@
 		E2E1BE9A19C2116A00AAB0FC /* AutoImporterTestProject1 */ = {
 			isa = PBXGroup;
 			children = (
+				E285674E19C72AF500E65317 /* LAFGroup */,
 				E2E1BEA619C2116A00AAB0FC /* LAFAppDelegate.h */,
 				E2E1BEA719C2116A00AAB0FC /* LAFAppDelegate.m */,
 				E2E1BEA919C2116A00AAB0FC /* MainMenu.xib */,
@@ -135,6 +153,8 @@
 				E2E1BED519C215A500AAB0FC /* LAFMyClass1.m */,
 				E2E1BED119C211EB00AAB0FC /* NSColor+MyColor.h */,
 				E2E1BED219C211EB00AAB0FC /* NSColor+MyColor.m */,
+				E285675319C72BEA00E65317 /* LAFSubdirectoryClass1.h */,
+				E285675419C72BEA00E65317 /* LAFSubdirectoryClass1.m */,
 			);
 			path = AutoImporterTestProject1;
 			sourceTree = "<group>";
@@ -268,8 +288,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E285675519C72BEA00E65317 /* LAFSubdirectoryClass1.m in Sources */,
 				E2E1BEA819C2116A00AAB0FC /* LAFAppDelegate.m in Sources */,
 				E2E1BED319C211EB00AAB0FC /* NSColor+MyColor.m in Sources */,
+				E285675119C72B1B00E65317 /* LAFGroupClass1.m in Sources */,
 				E2E1BED619C215A500AAB0FC /* LAFMyClass1.m in Sources */,
 				E2E1BECD19C2118F00AAB0FC /* LAFMyClass2.m in Sources */,
 				E2E1BEA119C2116A00AAB0FC /* main.m in Sources */,
@@ -280,6 +302,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E285675219C72B1B00E65317 /* LAFGroupClass1.m in Sources */,
+				E285675619C72BEA00E65317 /* LAFSubdirectoryClass1.m in Sources */,
 				E2E1BEBF19C2116B00AAB0FC /* AutoImporterTestProject1Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,7 +10,7 @@
 #import "LAFProjectHeaderCache.h"
 
 @interface AutoImporterTests : XCTestCase
-
+@property (nonatomic, strong) NSString *projectPath;
 @end
 
 @implementation AutoImporterTests
@@ -18,23 +18,36 @@
 - (void)setUp
 {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
+    _projectPath = [curDir stringByAppendingPathComponent:@"/../TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj"];
 }
 
 - (void)tearDown
 {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
 
-- (void)testExample
+- (void)testClassesAreImported
 {
-    NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
-    NSString *projectPath = [curDir stringByAppendingPathComponent:@"/../TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj"];
-    
-    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:projectPath];
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
     XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass1"], @"LAFMyClass1.h");
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass2"], @"LAFMyClass2.h");
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass2Bis"], @"LAFMyClass2.h");
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyProtocol1"], @"LAFMyClass1.h");
+}
+
+- (void)testGroupClassIsImported
+{
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFGroupClass1"], @"LAFGroupClass1.h");
+}
+
+- (void)testSubdirectoryClassIsImported
+{
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
+    XCTAssertEqualObjects([headers headerForSymbol:@"LAFSubdirectoryClass1"], @"LAFSubdirectoryClass1.h");
 }
 
 @end
