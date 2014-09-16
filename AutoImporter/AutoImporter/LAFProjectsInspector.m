@@ -86,9 +86,11 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 - (void)fileDidSave:(NSNotification *)notification {
     NSLog(@"saved file on workspace %@", [self currentWorkspace]);
-    NSString *changedFileAbsoluteString = [[[notification object] fileURL] absoluteString];
-    if ([changedFileAbsoluteString hasSuffix:@".h"]) {
-        NSLog(@"%@", changedFileAbsoluteString);
+    NSString *path = [[[notification object] fileURL] path];
+    if ([path hasSuffix:@".h"]) {
+        for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
+            [headers refreshHeader:path];
+        }
     }
 }
 
@@ -127,7 +129,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         //the current workspace. Find out which notification gets fired after opening
         //.xcodeproj and act after that perhaps...
 #warning should find another solution here
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
             NSLog(@"project %@ changed on workspace %@", filePath, [self currentWorkspace]);
 
@@ -142,7 +144,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 }
 
 - (void)updateProjectWithPath:(NSString *)path {
-    NSAssert([self currentWorkspace], @"workspace can't be nil");
+//    NSAssert([self currentWorkspace], @"workspace can't be nil");
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSLog(@"project path not found %@", path);

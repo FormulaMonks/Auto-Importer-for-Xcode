@@ -1,11 +1,11 @@
 TODO:
 
 - fix conflict with peckham key
-- re-parse on header file change
-- when two windows (and thus two projects) are open, symbols are shared
+- when two windows (and thus two projects) are open, projects are loaded for wrong workspace
 - load projects manually (asyncReloadHeaders)
 - subprojects?
 - add framework headers
+- tests!
 
 PROJECT PATHS:
 

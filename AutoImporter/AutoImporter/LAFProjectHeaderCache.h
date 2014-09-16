@@ -14,6 +14,7 @@
 
 - (instancetype)initWithProjectPath:(NSString *)filePath;
 - (void)refresh:(dispatch_block_t)doneBlock;
+- (void)refreshHeader:(NSString *)headerPath;
 - (NSString *)headerForSymbol:(NSString *)symbol;
 
 @end

@@ -14,6 +14,7 @@
 @interface LAFProjectHeaderCache()
 
 @property (nonatomic, strong) NSMutableDictionary *headersBySymbols;
+@property (nonatomic, strong) NSMutableDictionary *symbolsByHeader;
 @property (nonatomic, strong) NSOperationQueue *headersQueue;
 
 @end
@@ -26,6 +27,7 @@
     if (self) {
         _filePath = filePath;
         _headersBySymbols = [NSMutableDictionary new];
+        _symbolsByHeader = [NSMutableDictionary new];
         _headersQueue = [NSOperationQueue new];
         _headersQueue.maxConcurrentOperationCount = 1;
     }
@@ -34,6 +36,7 @@
 
 - (void)refresh:(dispatch_block_t)doneBlock {
     [_headersBySymbols removeAllObjects];
+    [_symbolsByHeader removeAllObjects];
     
     XCProject *project = [XCProject projectWithFilePath:_filePath];
     [_headersQueue addOperationWithBlock:^{
@@ -42,6 +45,17 @@
             doneBlock();
         }];
     }];
+}
+
+- (void)refreshHeader:(NSString *)headerPath {
+    for (NSString *symbol in _symbolsByHeader[[headerPath lastPathComponent]]) {
+        [_headersBySymbols removeObjectForKey:symbol];
+    }
+    
+    NSMutableArray *symbols = _symbolsByHeader[[headerPath lastPathComponent]];
+    [symbols removeAllObjects];
+    
+    [self processHeaderPath:headerPath];
 }
 
 - (NSString *)headerForSymbol:(NSString *)symbol {
@@ -79,12 +93,19 @@
         return;
     }
     
+    NSMutableArray *symbols = _symbolsByHeader[headerPath];
+    if (!symbols) {
+        symbols = [NSMutableArray array];
+        _symbolsByHeader[[headerPath lastPathComponent]] = symbols;
+    }
+    
     [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
         NSRange matchRange = [match rangeAtIndex:1];
         NSString *matchString = [content substringWithRange:matchRange];
         NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
             _headersBySymbols[matchTrim] = [headerPath lastPathComponent];
+            [symbols addObject:matchTrim];
         }
     }];
 }
