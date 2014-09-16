@@ -162,7 +162,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     NSString *text = nil;
     NSColor *color = nil;
     if (_loading) {
-        text = [NSString stringWithFormat:@"Indexing headers, please try in a few seconds..."];
+        text = [NSString stringWithFormat:@"Indexing headers, please try later..."];
         color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
     } else if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
@@ -190,35 +190,41 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     
     if (text) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
-            NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
-            NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
-            NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
-            keyRectOnTextView.size.width = 1;
-            
-            NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y, 0, 0)];
-            [field setBackgroundColor:color];
-            [field setFont:currentTextView.font];
-            [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
-            [field setStringValue:text];
-            [field sizeToFit];
-            [field setBordered:NO];
-            [field setEditable:NO];
-            field.frame = CGRectOffset(field.frame, 0, - field.bounds.size.height - 3);
-            
-            [currentTextView addSubview:field];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [NSAnimationContext beginGrouping];
-                [[NSAnimationContext currentContext] setCompletionHandler:^{
-                    [field removeFromSuperview];
-                }];
-                [[NSAnimationContext currentContext] setDuration:1.0];
-                [[field animator] setAlphaValue:0.0];
-                [NSAnimationContext endGrouping];
-            });
+            [self displayAboveCaretText:text color:color];
         });
     }
+}
+
+- (void)displayAboveCaretText:(NSString *)text color:(NSColor *)color {
+    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+
+    NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
+    NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
+    NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
+    NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
+    keyRectOnTextView.size.width = 1;
+    
+    NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y, 0, 0)];
+    [field setBackgroundColor:color];
+    [field setFont:currentTextView.font];
+    [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
+    [field setStringValue:text];
+    [field sizeToFit];
+    [field setBordered:NO];
+    [field setEditable:NO];
+    field.frame = CGRectOffset(field.frame, 0, - field.bounds.size.height - 3);
+    
+    [currentTextView addSubview:field];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setCompletionHandler:^{
+            [field removeFromSuperview];
+        }];
+        [[NSAnimationContext currentContext] setDuration:1.0];
+        [[field animator] setAlphaValue:0.0];
+        [NSAnimationContext endGrouping];
+    });
 }
 
 - (DVTSourceTextStorage *)currentTextStorage {
