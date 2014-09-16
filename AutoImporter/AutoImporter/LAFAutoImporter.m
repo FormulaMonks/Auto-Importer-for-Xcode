@@ -19,17 +19,16 @@ static LAFAutoImporter *sharedPlugin;
 
 @implementation LAFAutoImporter
 
-OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void *userData) {
+static OSStatus lafHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void *userData) {
     
-    EventHotKeyID hkRef;
-    GetEventParameter(anEvent,kEventParamDirectObject,typeEventHotKeyID,NULL,sizeof(hkRef),NULL,&hkRef);
-    switch (hkRef.id) {
+    EventHotKeyID lafRef;
+    GetEventParameter(anEvent,kEventParamDirectObject,typeEventHotKeyID,NULL,sizeof(lafRef),NULL,&lafRef);
+    switch (lafRef.id) {
         case 1:
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"LAFShowHeaders"
-                                                                object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LAFShowHeaders" object:nil];
         }
-            break;
+        break;
             
     }
     return noErr;
@@ -63,23 +62,18 @@ OSStatus myHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEvent, void
 }
 
 - (void)loadKeyboardHandler {
-    EventHotKeyRef myHotKeyRef;
-    EventHotKeyID myHotKeyID;
+    EventHotKeyRef lafHotKeyRef;
+    EventHotKeyID lafHotKeyID;
     EventTypeSpec eventType;
     
     eventType.eventClass=kEventClassKeyboard;
     eventType.eventKind=kEventHotKeyPressed;
-    InstallApplicationEventHandler(&myHotKeyHandler,1,&eventType,NULL,NULL);
+    InstallApplicationEventHandler(&lafHotKeyHandler,1,&eventType,NULL,NULL);
     
-    myHotKeyID.signature='lak1';
-    myHotKeyID.id=1;
+    lafHotKeyID.signature='lak1';
+    lafHotKeyID.id=1;
     
-    RegisterEventHotKey(kVK_ANSI_H, cmdKey+controlKey, myHotKeyID, GetApplicationEventTarget(), 0, &myHotKeyRef);
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    RegisterEventHotKey(kVK_ANSI_H, cmdKey+controlKey, lafHotKeyID, GetApplicationEventTarget(), 0, &lafHotKeyRef);
 }
 
 @end

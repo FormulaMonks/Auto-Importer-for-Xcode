@@ -56,9 +56,40 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
                                selector:@selector(projectDidClose:)
                                    name:@"PBXProjectDidCloseNotification"
                                  object:nil];
+
+        [notificationCenter addObserver:self
+                               selector:@selector(fileDidSave:)
+                                   name:@"IDEEditorDocumentDidSaveNotification"
+                                 object:nil];
+
+//        [notificationCenter addObserver:self
+//                               selector:@selector(fileDidChange:)
+//                                   name:@"IDEEditorDocumentWillCloseNotification"
+//                                 object:nil];
+//
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationListener:) name:nil object:nil];
+
     }
     return self;
 }
+
+-(void)notificationListener:(NSNotification *)notification {
+//    NSLog(@"  Notification: %@", [notification name]);
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)fileDidSave:(NSNotification *)notification {
+    NSLog(@"saved file on workspace %@", [self currentWorkspace]);
+    NSString *changedFileAbsoluteString = [[[notification object] fileURL] absoluteString];
+    if ([changedFileAbsoluteString hasSuffix:@".h"]) {
+        NSLog(@"%@", changedFileAbsoluteString);
+    }
+}
+
 
 - (void)projectDidClose:(NSNotification *)notification {
     NSString *path = [self filePathForProjectFromNotification:notification];
@@ -77,16 +108,24 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 - (void)projectDidChange:(NSNotification *)notification {
     NSString *filePath = [self filePathForProjectFromNotification:notification];
+
     if (filePath) {
-        
         //TODO: This is a temporary solution which works. When opening .xcodeproj
         //files, it seems that the notification order is differrent and we can't find
         //the current workspace. Find out which notification gets fired after opening
         //.xcodeproj and act after that perhaps...
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            NSLog(@"project %@ changed on workspace %@", filePath, [self currentWorkspace]);
+
             [self updateProjectWithPath:filePath];
         });
     }
+}
+
+- (NSString *)currentWorkspace {
+    NSString *workspacePath = [MHXcodeDocumentNavigator currentWorkspacePath];
+    return workspacePath;
 }
 
 - (void)updateProjectWithPath:(NSString *)path {
