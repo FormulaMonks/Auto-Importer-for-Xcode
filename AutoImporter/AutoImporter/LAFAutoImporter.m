@@ -13,7 +13,6 @@
 static LAFAutoImporter *sharedPlugin;
 
 @interface LAFAutoImporter()
-@property (nonatomic, strong) NSMutableDictionary *workspaceCacheDictionary;
 @property (nonatomic, strong) NSBundle *bundle;
 @end
 
@@ -48,8 +47,6 @@ static OSStatus lafHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEve
 - (id)initWithBundle:(NSBundle *)plugin
 {
     if (self = [super init]) {
-        _workspaceCacheDictionary = [NSMutableDictionary new];
-
         // init inspector
         [LAFProjectsInspector sharedInspector];
         
