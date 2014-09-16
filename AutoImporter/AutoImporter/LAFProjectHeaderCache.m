@@ -33,6 +33,8 @@
 }
 
 - (void)refresh:(dispatch_block_t)doneBlock {
+    [_headersBySymbols removeAllObjects];
+    
     XCProject *project = [XCProject projectWithFilePath:_filePath];
     [_headersQueue addOperationWithBlock:^{
         [self updateProject:project];
@@ -108,7 +110,7 @@
     NSDate *methodFinish = [NSDate date];
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
     
-    NSLog(@"Headers in project %@: %d - parse time: %f", [[project filePath] lastPathComponent], (int)[_headersBySymbols count], executionTime);
+    NSLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersBySymbols count], [[project filePath] lastPathComponent], executionTime);
 }
 
 @end

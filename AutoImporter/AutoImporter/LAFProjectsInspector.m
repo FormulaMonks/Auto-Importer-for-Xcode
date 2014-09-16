@@ -16,7 +16,7 @@
 NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include).*[\",<].*[\",>]";
 
 @interface LAFProjectsInspector ()
-@property (nonatomic, strong) NSMutableArray *projectHeaders;
+@property (nonatomic, strong) NSMapTable *projectsByWorkspace;
 @property BOOL loading;
 @end
 
@@ -35,7 +35,8 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 {
     self = [super init];
     if (self) {
-        _projectHeaders = [NSMutableArray new];
+        _projectsByWorkspace = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory
+                                                valueOptions:NSPointerFunctionsStrongMemory];
 
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         
@@ -91,11 +92,11 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     }
 }
 
-
 - (void)projectDidClose:(NSNotification *)notification {
     NSString *path = [self filePathForProjectFromNotification:notification];
     LAFProjectHeaderCache *toRemove = nil;
-    for (LAFProjectHeaderCache *headers in _projectHeaders) {
+    NSMutableArray *projects = [self projectsInCurrentWorkspace];
+    for (LAFProjectHeaderCache *headers in projects) {
         if ([headers.filePath isEqualToString:path]) {
             toRemove = headers;
             break;
@@ -103,8 +104,18 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     }
     
     if (toRemove) {
-        [_projectHeaders removeObject:toRemove];
+        [projects removeObject:toRemove];
     }
+}
+
+- (NSMutableArray *)projectsInCurrentWorkspace {
+    NSMutableArray *projects = [_projectsByWorkspace objectForKey:[self currentWorkspace]];
+    if (!projects) {
+        projects = [NSMutableArray array];
+        [_projectsByWorkspace setObject:projects forKey:[self currentWorkspace]];
+    }
+    
+    return projects;
 }
 
 - (void)projectDidChange:(NSNotification *)notification {
@@ -115,6 +126,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         //files, it seems that the notification order is differrent and we can't find
         //the current workspace. Find out which notification gets fired after opening
         //.xcodeproj and act after that perhaps...
+#warning should find another solution here
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
             NSLog(@"project %@ changed on workspace %@", filePath, [self currentWorkspace]);
@@ -130,17 +142,33 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 }
 
 - (void)updateProjectWithPath:(NSString *)path {
+    NSAssert([self currentWorkspace], @"workspace can't be nil");
+    
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSLog(@"project path not found %@", path);
         return;
     }
     
+    LAFProjectHeaderCache *projectCache = nil;
+    for (LAFProjectHeaderCache *cache in [self projectsInCurrentWorkspace]) {
+        if ([cache.filePath isEqualToString:path]) {
+            projectCache = cache;
+            break;
+        }
+    }
+    
+    if (!projectCache) {
+        NSLog(@"creating project %@ for workspace %@", [path lastPathComponent], [[self currentWorkspace] lastPathComponent]);
+
+        projectCache = [[LAFProjectHeaderCache alloc] initWithProjectPath:path];
+        [[self projectsInCurrentWorkspace] addObject:projectCache];
+    }
+    
     _loading = YES;
-    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:path];
-    [headers refresh:^{
-        [_projectHeaders addObject:headers];
+    [projectCache refresh:^{
         _loading = NO;
     }];
+
 }
 
 #pragma clang diagnostic push
@@ -166,7 +194,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
     } else if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
-        for (LAFProjectHeaderCache *headers in _projectHeaders) {
+        for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
             NSString *header = [headers headerForSymbol:selection];
             if (header) {
                 BOOL already = [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
@@ -192,6 +220,8 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self displayAboveCaretText:text color:color];
         });
+    } else {
+        NSLog(@"no text to show");
     }
 }
 
