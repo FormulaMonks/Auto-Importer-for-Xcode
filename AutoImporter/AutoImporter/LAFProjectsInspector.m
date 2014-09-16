@@ -17,6 +17,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 @interface LAFProjectsInspector ()
 @property (nonatomic, strong) NSMutableArray *projectHeaders;
+@property BOOL loading;
 @end
 
 @implementation LAFProjectsInspector
@@ -133,8 +134,13 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         NSLog(@"project path not found %@", path);
         return;
     }
+    
+    _loading = YES;
     LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:path];
-    [_projectHeaders addObject:headers];
+    [headers refresh:^{
+        [_projectHeaders addObject:headers];
+        _loading = NO;
+    }];
 }
 
 #pragma clang diagnostic push
@@ -155,7 +161,10 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     NSRange range = currentTextView.selectedRange;
     NSString *text = nil;
     NSColor *color = nil;
-    if (range.length > 0) {
+    if (_loading) {
+        text = [NSString stringWithFormat:@"Indexing headers, please try in a few seconds..."];
+        color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
+    } else if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
         for (LAFProjectHeaderCache *headers in _projectHeaders) {
             NSString *header = [headers headerForSymbol:selection];

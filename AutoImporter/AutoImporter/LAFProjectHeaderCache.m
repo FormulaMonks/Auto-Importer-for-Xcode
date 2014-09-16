@@ -14,6 +14,7 @@
 @interface LAFProjectHeaderCache()
 
 @property (nonatomic, strong) NSMutableDictionary *headersBySymbols;
+@property (nonatomic, strong) NSOperationQueue *headersQueue;
 
 @end
 
@@ -25,11 +26,20 @@
     if (self) {
         _filePath = filePath;
         _headersBySymbols = [NSMutableDictionary new];
-
-        XCProject *project = [XCProject projectWithFilePath:filePath];
-        [self updateProject:project];
+        _headersQueue = [NSOperationQueue new];
+        _headersQueue.maxConcurrentOperationCount = 1;
     }
     return self;
+}
+
+- (void)refresh:(dispatch_block_t)doneBlock {
+    XCProject *project = [XCProject projectWithFilePath:_filePath];
+    [_headersQueue addOperationWithBlock:^{
+        [self updateProject:project];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            doneBlock();
+        }];
+    }];
 }
 
 - (NSString *)headerForSymbol:(NSString *)symbol {
@@ -98,9 +108,7 @@
     NSDate *methodFinish = [NSDate date];
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
     
-    NSLog(@"Parse Time for project %@: %f", [[project filePath] lastPathComponent], executionTime);
-    
-    NSLog(@"%@", _headersBySymbols);
+    NSLog(@"Headers in project %@: %d - parse time: %f", [[project filePath] lastPathComponent], (int)[_headersBySymbols count], executionTime);
 }
 
 @end

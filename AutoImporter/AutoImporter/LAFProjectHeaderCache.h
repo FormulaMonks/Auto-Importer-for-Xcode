@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) NSString *filePath;
 
 - (instancetype)initWithProjectPath:(NSString *)filePath;
+- (void)refresh:(dispatch_block_t)doneBlock;
 - (NSString *)headerForSymbol:(NSString *)symbol;
 
 @end
