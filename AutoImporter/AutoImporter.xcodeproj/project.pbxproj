@@ -31,9 +31,11 @@
 		E26F413C19C0C56B00527019 /* XCWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F413619C0C56B00527019 /* XCWorkspace.m */; };
 		E2733B1C19C763BA00F55A20 /* LAFProjectsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = E2733B1B19C763BA00F55A20 /* LAFProjectsInspector.m */; };
 		E2733B1D19C763BA00F55A20 /* LAFProjectsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = E2733B1B19C763BA00F55A20 /* LAFProjectsInspector.m */; };
+		E29ED2AA19C9FA65002EF155 /* LAFProjectsInspectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E29ED2A919C9FA65002EF155 /* LAFProjectsInspectorTests.m */; };
+		E29ED2AD19C9FA91002EF155 /* LAFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29ED2AC19C9FA91002EF155 /* LAFTestCase.m */; };
 		E2AD80F119C68DF8008D33E1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2AD80F019C68DF8008D33E1 /* XCTest.framework */; };
 		E2AD80F719C68DF8008D33E1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E2AD80F519C68DF8008D33E1 /* InfoPlist.strings */; };
-		E2AD80F919C68DF8008D33E1 /* AutoImporterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AD80F819C68DF8008D33E1 /* AutoImporterTests.m */; };
+		E2AD80F919C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AD80F819C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m */; };
 		E2AD810219C690AD008D33E1 /* LAFProjectHeaderCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AD810119C690AD008D33E1 /* LAFProjectHeaderCache.m */; };
 		E2AD810319C690AD008D33E1 /* LAFProjectHeaderCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AD810119C690AD008D33E1 /* LAFProjectHeaderCache.m */; };
 		E2AD810419C69549008D33E1 /* NSString+XCAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F412C19C0C56B00527019 /* NSString+XCAdditions.m */; };
@@ -112,11 +114,14 @@
 		E26F413619C0C56B00527019 /* XCWorkspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCWorkspace.m; sourceTree = "<group>"; };
 		E2733B1A19C763BA00F55A20 /* LAFProjectsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFProjectsInspector.h; sourceTree = "<group>"; };
 		E2733B1B19C763BA00F55A20 /* LAFProjectsInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectsInspector.m; sourceTree = "<group>"; };
+		E29ED2A919C9FA65002EF155 /* LAFProjectsInspectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectsInspectorTests.m; sourceTree = "<group>"; };
+		E29ED2AB19C9FA91002EF155 /* LAFTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFTestCase.h; sourceTree = "<group>"; };
+		E29ED2AC19C9FA91002EF155 /* LAFTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFTestCase.m; sourceTree = "<group>"; };
 		E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoImporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2AD80F019C68DF8008D33E1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E2AD80F419C68DF8008D33E1 /* AutoImporterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AutoImporterTests-Info.plist"; sourceTree = "<group>"; };
 		E2AD80F619C68DF8008D33E1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E2AD80F819C68DF8008D33E1 /* AutoImporterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoImporterTests.m; sourceTree = "<group>"; };
+		E2AD80F819C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LAFProjectHeaderCacheTests.m; sourceTree = "<group>"; };
 		E2AD80FA19C68DF8008D33E1 /* AutoImporterTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoImporterTests-Prefix.pch"; sourceTree = "<group>"; };
 		E2AD810019C690AD008D33E1 /* LAFProjectHeaderCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFProjectHeaderCache.h; sourceTree = "<group>"; };
 		E2AD810119C690AD008D33E1 /* LAFProjectHeaderCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectHeaderCache.m; sourceTree = "<group>"; };
@@ -282,7 +287,10 @@
 		E2AD80F219C68DF8008D33E1 /* AutoImporterTests */ = {
 			isa = PBXGroup;
 			children = (
-				E2AD80F819C68DF8008D33E1 /* AutoImporterTests.m */,
+				E29ED2AB19C9FA91002EF155 /* LAFTestCase.h */,
+				E29ED2AC19C9FA91002EF155 /* LAFTestCase.m */,
+				E29ED2A919C9FA65002EF155 /* LAFProjectsInspectorTests.m */,
+				E2AD80F819C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m */,
 				E2AD80F319C68DF8008D33E1 /* Supporting Files */,
 			);
 			path = AutoImporterTests;
@@ -493,8 +501,10 @@
 				E2AD811119C69561008D33E1 /* NSTextView+Operations.m in Sources */,
 				E2AD810E19C69561008D33E1 /* NSString+Extensions.m in Sources */,
 				E2AD811419C6958E008D33E1 /* MHXcodeDocumentNavigator.m in Sources */,
+				E29ED2AA19C9FA65002EF155 /* LAFProjectsInspectorTests.m in Sources */,
+				E29ED2AD19C9FA91002EF155 /* LAFTestCase.m in Sources */,
 				E2AD810619C6954E008D33E1 /* XCTarget+XCProject.m in Sources */,
-				E2AD80F919C68DF8008D33E1 /* AutoImporterTests.m in Sources */,
+				E2AD80F919C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m in Sources */,
 				E2AD810A19C69561008D33E1 /* NSArray+Operations.m in Sources */,
 				E2AD810519C6954B008D33E1 /* XCProject+Extensions.m in Sources */,
 				E2AD810B19C69561008D33E1 /* NSFileManager+Headers.m in Sources */,

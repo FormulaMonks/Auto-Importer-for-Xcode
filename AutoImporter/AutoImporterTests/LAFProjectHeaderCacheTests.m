@@ -8,42 +8,25 @@
 
 #import <XCTest/XCTest.h>
 #import "LAFProjectHeaderCache.h"
+#import "LAFTestCase.h"
 
-@interface AutoImporterTests : XCTestCase
+@interface LAFProjectHeaderCacheTests : LAFTestCase
 @property (nonatomic, strong) NSString *projectPath;
-@property (nonatomic) dispatch_group_t requestGroup;
 @end
 
-@implementation AutoImporterTests
+@implementation LAFProjectHeaderCacheTests
 
 - (void)setUp
 {
     [super setUp];
     
     NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
-    _projectPath = [curDir stringByAppendingPathComponent:@"/../TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj"];
-    
-    _requestGroup = dispatch_group_create();
+    _projectPath = [curDir stringByAppendingPathComponent:@"/../TestProjects/AutoImporterTestProject1/AutoImporterTestProject1.xcodeproj"];    
 }
 
 - (void)tearDown
 {
-    [self waitForGroup];
     [super tearDown];
-}
-
-- (void)waitForGroup;
-{
-    __block BOOL didComplete = NO;
-    dispatch_group_notify(self.requestGroup, dispatch_get_main_queue(), ^{
-        didComplete = YES;
-    });
-    while (! didComplete) {
-        NSTimeInterval const interval = 0.002;
-        if (! [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:interval]]) {
-            [NSThread sleepForTimeInterval:interval];
-        }
-    }
 }
 
 - (void)testClassesAreImported
