@@ -124,27 +124,19 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     NSString *filePath = [self filePathForProjectFromNotification:notification];
 
     if (filePath) {
-        //TODO: This is a temporary solution which works. When opening .xcodeproj
-        //files, it seems that the notification order is differrent and we can't find
-        //the current workspace. Find out which notification gets fired after opening
-        //.xcodeproj and act after that perhaps...
-#warning should find another solution here
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            
-            NSLog(@"project %@ changed on workspace %@", filePath, [self currentWorkspace]);
-
-            [self updateProjectWithPath:filePath];
-        });
+        [self updateProjectWithPath:filePath];
     }
 }
 
 - (NSString *)currentWorkspace {
-    NSString *workspacePath = [MHXcodeDocumentNavigator currentWorkspacePath];
-    return workspacePath;
+    return @"workspace";
+// this code below is not working if tried a few moments after opening xcode
+//    NSString *workspacePath = [MHXcodeDocumentNavigator currentWorkspacePath];
+//    return workspacePath;
 }
 
 - (void)updateProjectWithPath:(NSString *)path {
-//    NSAssert([self currentWorkspace], @"workspace can't be nil");
+    NSAssert([self currentWorkspace], @"workspace can't be nil");
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSLog(@"project path not found %@", path);
