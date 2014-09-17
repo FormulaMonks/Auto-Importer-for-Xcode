@@ -87,4 +87,33 @@
     }];
 }
 
+- (void)testHeaderChanged
+{
+    dispatch_group_enter(self.requestGroup);
+    
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
+    [headers refresh:^{
+        XCTAssertNil([headers headerForSymbol:@"LAFMyClass2BisBis"]);
+        
+        NSString *headerPath = [[_projectPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"AutoImporterTestProject1/LAFMyClass2.h"];
+        
+        NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
+        
+        NSString *newContent = [content stringByAppendingString:@"\n@interface LAFMyClass2BisBis : NSObject\n\n@end"];
+        
+        // replace file
+        [newContent writeToFile:headerPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        
+        [headers refreshHeader:headerPath];
+        
+        XCTAssertEqualObjects([headers headerForSymbol:@"LAFMyClass2BisBis"], @"LAFMyClass2.h");
+        
+        // restore file
+        [content writeToFile:headerPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        
+        dispatch_group_leave(self.requestGroup);
+    }];
+    
+}
+
 @end
