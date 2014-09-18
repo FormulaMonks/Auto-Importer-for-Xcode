@@ -2,8 +2,6 @@ TODO:
 
 - fix conflict with peckham key
 - when two windows (and thus two projects) are open, there is no distinction between workspaces and symbols
-- load projects manually (asyncReloadHeaders)
-- subprojects?
 - add framework headers
 - tests!
 
