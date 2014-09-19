@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		90A44E1F936B4B668EE81A3D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 254E2E54B2C942A493C01F55 /* libPods.a */; };
 		C4C9E477D59D4E429E792676 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 254E2E54B2C942A493C01F55 /* libPods.a */; };
+		E264C7D319CC9BD700D8DAF7 /* LAFImportListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */; };
+		E264C7D419CC9BD700D8DAF7 /* LAFImportListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */; };
+		E264C7D719CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */; };
+		E264C7D819CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */; };
+		E264C7DB19CC9DEC00D8DAF7 /* LAFImportListView.m in Sources */ = {isa = PBXBuildFile; fileRef = E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */; };
+		E264C7DC19CC9DEC00D8DAF7 /* LAFImportListView.m in Sources */ = {isa = PBXBuildFile; fileRef = E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */; };
 		E26F40E019C0B95500527019 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E26F40DF19C0B95500527019 /* AppKit.framework */; };
 		E26F40E219C0B95500527019 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E26F40E119C0B95500527019 /* Foundation.framework */; };
 		E26F40E819C0B95500527019 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E26F40E619C0B95500527019 /* InfoPlist.strings */; };
@@ -71,6 +77,11 @@
 /* Begin PBXFileReference section */
 		254E2E54B2C942A493C01F55 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F308B48C12848EEB802C9C3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LAFImportListView.xib; sourceTree = "<group>"; };
+		E264C7D519CC9CEA00D8DAF7 /* LAFImportListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFImportListViewController.h; sourceTree = "<group>"; };
+		E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListViewController.m; sourceTree = "<group>"; };
+		E264C7D919CC9DEC00D8DAF7 /* LAFImportListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFImportListView.h; sourceTree = "<group>"; };
+		E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListView.m; sourceTree = "<group>"; };
 		E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoImporter.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		E26F40DF19C0B95500527019 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E26F40E119C0B95500527019 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -196,6 +207,11 @@
 				E2AD810119C690AD008D33E1 /* LAFProjectHeaderCache.m */,
 				E2733B1A19C763BA00F55A20 /* LAFProjectsInspector.h */,
 				E2733B1B19C763BA00F55A20 /* LAFProjectsInspector.m */,
+				E264C7D519CC9CEA00D8DAF7 /* LAFImportListViewController.h */,
+				E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */,
+				E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */,
+				E264C7D919CC9DEC00D8DAF7 /* LAFImportListView.h */,
+				E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */,
 				E26F40E419C0B95500527019 /* Supporting Files */,
 			);
 			path = AutoImporter;
@@ -387,6 +403,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E26F40E819C0B95500527019 /* InfoPlist.strings in Resources */,
+				E264C7D319CC9BD700D8DAF7 /* LAFImportListView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +412,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2AD80F719C68DF8008D33E1 /* InfoPlist.strings in Resources */,
+				E264C7D419CC9BD700D8DAF7 /* LAFImportListView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,11 +501,13 @@
 				E2F5DFF919C1EBBA00666067 /* XCSourceFile+Path.m in Sources */,
 				E26F411E19C0C52300527019 /* NSFileManager+Headers.m in Sources */,
 				E26F413B19C0C56B00527019 /* XCBuildSettings.m in Sources */,
+				E264C7DB19CC9DEC00D8DAF7 /* LAFImportListView.m in Sources */,
 				E26F412219C0C52300527019 /* NSString+Files.m in Sources */,
 				E26F40F719C0C4DE00527019 /* MHXcodeDocumentNavigator.m in Sources */,
 				E26F412519C0C52300527019 /* NSView+Dumping.m in Sources */,
 				E26F413719C0C56B00527019 /* NSString+XCAdditions.m in Sources */,
 				E26F412319C0C52300527019 /* NSString+MHNSRange.m in Sources */,
+				E264C7D719CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,9 +526,11 @@
 				E2AD810619C6954E008D33E1 /* XCTarget+XCProject.m in Sources */,
 				E2AD80F919C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m in Sources */,
 				E2AD810A19C69561008D33E1 /* NSArray+Operations.m in Sources */,
+				E264C7DC19CC9DEC00D8DAF7 /* LAFImportListView.m in Sources */,
 				E2AD810519C6954B008D33E1 /* XCProject+Extensions.m in Sources */,
 				E2AD810B19C69561008D33E1 /* NSFileManager+Headers.m in Sources */,
 				E2AD811219C69561008D33E1 /* NSView+Dumping.m in Sources */,
+				E264C7D819CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */,
 				E2AD811319C69561008D33E1 /* XCSourceFile+Path.m in Sources */,
 				E2AD810919C69561008D33E1 /* DVTSourceTextStorage+Operations.m in Sources */,
 				E2AD810D19C69561008D33E1 /* NSObject+MHLogMethods.m in Sources */,

@@ -10,8 +10,10 @@
 #import "XCFXcodePrivate.h"
 #import "MHXcodeDocumentNavigator.h"
 #import "DVTSourceTextStorage+Operations.h"
+#import "NSTextView+Operations.h"
 #import "NSString+Extensions.h"
 #import "LAFProjectHeaderCache.h"
+#import "LAFImportListViewController.h"
 
 NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include).*[\",<].*[\",>]";
 
@@ -206,8 +208,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
             }
         }
     } else {
-        text = [NSString stringWithFormat:@"No text selection"];
-        color = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
+        [LAFImportListViewController presentInView:currentTextView];
     }
     
     if (text) {
@@ -222,11 +223,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 - (void)displayAboveCaretText:(NSString *)text color:(NSColor *)color {
     NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
 
-    NSRange selectedRange = [[currentTextView.selectedRanges objectAtIndex:0] rangeValue];
-    NSRect keyRectOnScreen = [currentTextView firstRectForCharacterRange:selectedRange];
-    NSRect keyRectOnWindow = [currentTextView.window convertRectFromScreen:keyRectOnScreen];
-    NSRect keyRectOnTextView = [currentTextView convertRect:keyRectOnWindow fromView:nil];
-    keyRectOnTextView.size.width = 1;
+    NSRect keyRectOnTextView = [currentTextView mhFrameForCaret];
     
     NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y, 0, 0)];
     [field setBackgroundColor:color];
