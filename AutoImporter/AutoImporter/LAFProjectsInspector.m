@@ -15,9 +15,15 @@
 #import "LAFProjectHeaderCache.h"
 #import "LAFImportListViewController.h"
 
+typedef enum {
+    LAFImportResultAlready,
+    LAFImportResultNotFound,
+    LAFImportResultDone,
+} LAFImportResult;
+
 NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include).*[\",<].*[\",>]";
 
-@interface LAFProjectsInspector ()
+@interface LAFProjectsInspector () <LAFImportListViewControllerDelegate>
 @property (nonatomic, strong) NSMapTable *projectsByWorkspace;
 @property BOOL loading;
 @end
@@ -180,43 +186,70 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 #pragma clang diagnostic pop
 
+- (LAFImportResult)importHeader:(NSString *)header {
+    return [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
+}
+
+- (LAFImportResult)importSymbol:(NSString *)symbol headerOut:(NSMutableString *)headerOut {
+    for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
+        NSString *header = [headers headerForSymbol:symbol];
+        if (header) {
+            [headerOut appendString:header];
+            
+            return [self importHeader:header];
+        }
+    }
+
+    [headerOut appendString:symbol];
+    return LAFImportResultNotFound;
+}
+
+- (void)showCaretTextBasedOn:(LAFImportResult)result item:(NSString *)item {
+    NSString *text = nil;
+    NSColor *color = nil;
+
+    switch (result) {
+        case LAFImportResultAlready:
+            text = [NSString stringWithFormat:@"Header '%@' already added", item];
+            color = [NSColor colorWithRed:1.0 green:1.0 blue:0.8 alpha:1.0];
+            break;
+        case LAFImportResultNotFound:
+            text = [NSString stringWithFormat:@"Symbol '%@' not found", item];
+            color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
+            break;
+        case LAFImportResultDone:
+            text = [NSString stringWithFormat:@"Header '%@' added!", item];
+            color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
+            break;
+    }
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self displayAboveCaretText:text color:color];
+    });
+}
+
 - (void)importAction:(NSNotification *)notif {
     NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
     NSRange range = currentTextView.selectedRange;
-    NSString *text = nil;
-    NSColor *color = nil;
     if (_loading) {
-        text = [NSString stringWithFormat:@"Indexing headers, please try later..."];
-        color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
+        NSString *text = [NSString stringWithFormat:@"Indexing headers, please try later..."];
+        NSColor *color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
+        [self displayAboveCaretText:text color:color];
     } else if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
-        for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
-            NSString *header = [headers headerForSymbol:selection];
-            if (header) {
-                BOOL already = [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
-                if (already) {
-                    text = [NSString stringWithFormat:@"Header '%@' already added", header];
-                    color = [NSColor colorWithRed:1.0 green:1.0 blue:0.8 alpha:1.0];
-                } else {
-                    text = [NSString stringWithFormat:@"Header '%@' added!", header];
-                    color = [NSColor colorWithRed:0.8 green:1.0 blue:0.8 alpha:1.0];
-                }
-                break;
-            } else {
-                text = [NSString stringWithFormat:@"Symbol '%@' not found", selection];
-                color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
-            }
+        NSMutableString *headerOut = [NSMutableString string];
+        LAFImportResult result = [self importSymbol:selection headerOut:headerOut];
+        [self showCaretTextBasedOn:result item:headerOut];
+    } else {
+        NSMutableArray *items = [NSMutableArray array];
+        NSArray *projects = [self projectsInCurrentWorkspace];
+        for (LAFProjectHeaderCache *project in projects) {
+            [items addObjectsFromArray:[project symbols]];
+            [items addObjectsFromArray:[project headers]];
         }
-    } else {
-        [LAFImportListViewController presentInView:currentTextView];
-    }
-    
-    if (text) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self displayAboveCaretText:text color:color];
-        });
-    } else {
-        NSLog(@"no text to show");
+        
+        [LAFImportListViewController sharedInstance].delegate = self;
+        [LAFImportListViewController presentInView:currentTextView items:items];
     }
 }
 
@@ -256,7 +289,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     return (DVTSourceTextStorage*)textView.textStorage;
 }
 
-- (BOOL)addImport:(NSString *)statement {
+- (LAFImportResult)addImport:(NSString *)statement {
     DVTSourceTextStorage *textStorage = [self currentTextStorage];
     BOOL duplicate = NO;
     NSInteger lastLine = [self appropriateLine:textStorage statement:statement duplicate:&duplicate];
@@ -270,7 +303,11 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         });
     }
     
-    return duplicate;
+    if (duplicate) {
+        return LAFImportResultAlready;
+    } else {
+        return LAFImportResultDone;
+    }
 }
 
 - (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement duplicate:(BOOL *)duplicate {
@@ -329,5 +366,20 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
                                                          range:NSMakeRange(0, string.length)];
     return numberOfMatches > 0;
 }
+
+#pragma mark - LAFImportListViewControllerDelegate
+
+- (void)itemSelected:(NSString *)item {
+    LAFImportResult result = 0;
+    if ([item hasSuffix:@".h"]) {
+        result = [self importHeader:item];
+        [self showCaretTextBasedOn:result item:item];
+    } else {
+        NSMutableString *headerOut = [NSMutableString string];
+        result = [self importSymbol:item headerOut:headerOut];
+        [self showCaretTextBasedOn:result item:headerOut];
+    }
+}
+
 
 @end

@@ -9,9 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
+@protocol LAFImportListViewControllerDelegate <NSObject>
+
+- (void)itemSelected:(NSString *)item;
+
+@end
+
 @interface LAFImportListViewController : NSObject
 
+@property ( nonatomic, weak) id<LAFImportListViewControllerDelegate> delegate;
+
 + (instancetype)sharedInstance;
-+ (instancetype)presentInView:(NSView *)view;
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items;
 
 @end

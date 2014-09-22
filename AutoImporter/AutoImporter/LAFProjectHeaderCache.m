@@ -62,6 +62,14 @@
     return _headersBySymbols[symbol];
 }
 
+- (NSArray *)headers {
+    return [_headersBySymbols allValues];
+}
+
+- (NSArray *)symbols {
+    return [_headersBySymbols allKeys];
+}
+
 - (NSArray *)fullPathsForFiles:(NSSet *)fileNames inDirectory:(NSString *)directoryPath {
     NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:directoryPath];
     

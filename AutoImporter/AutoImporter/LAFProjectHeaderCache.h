@@ -11,6 +11,8 @@
 @interface LAFProjectHeaderCache : NSObject
 
 @property (nonatomic, readonly) NSString *filePath;
+@property (nonatomic, readonly) NSArray *symbols;
+@property (nonatomic, readonly) NSArray *headers;
 
 - (instancetype)initWithProjectPath:(NSString *)filePath;
 - (void)refresh:(dispatch_block_t)doneBlock;

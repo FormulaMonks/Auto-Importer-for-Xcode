@@ -12,6 +12,7 @@
 
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;
+@property (nonatomic, strong) NSArray *items;
 @end
 
 
@@ -26,8 +27,9 @@
     return _viewController;
 }
 
-+ (instancetype)presentInView:(NSView *)view {
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items {
     LAFImportListViewController *instance = [self sharedInstance];
+    instance.items = items;
     if([view isKindOfClass:[NSTextView class]]) {
         [instance showImportListViewInTextView:(NSTextView *)view];
     } else {
@@ -46,6 +48,11 @@
 }
 
 - (void)showImportListViewInView:(NSView *)view frame:(NSRect)frame {
+    if (!view) {
+        NSLog(@"Can't show symbols import list since view is nil");
+        return;
+    }
+    
     if (!self.popover.isShown) {
         [self.popover showRelativeToRect:frame
                                   ofView:view
@@ -72,7 +79,19 @@
     
     LAFImportListView *view = [self currentListView];
     view.tableView.dataSource = self;
+    view.tableView.target = self;
+    view.tableView.doubleAction = @selector(doubleAction);
     view.searchField.delegate = self;
+}
+
+- (void)doubleAction {
+    LAFImportListView *view = [self currentListView];
+    NSIndexSet *indexes = [view.tableView selectedRowIndexes];
+    if ([indexes count] == 1) {
+        int index = (int)[indexes firstIndex];
+        [_delegate itemSelected:self.items[index]];
+        [self dismiss];
+    }
 }
 
 - (LAFImportListView *)currentListView {
@@ -97,11 +116,11 @@
 #pragma mark - NSTableViewDataSource
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return @"MyClass (MyClass.h)";
+    return _items[row];
 }
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
-    return 10;
+    return [_items count];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {

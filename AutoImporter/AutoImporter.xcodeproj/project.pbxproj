@@ -371,7 +371,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = LAF;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = luisfloreani.com;
 				TargetAttributes = {
 					E2AD80EE19C68DF8008D33E1 = {
@@ -678,6 +678,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
@@ -702,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
