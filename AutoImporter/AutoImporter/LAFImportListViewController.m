@@ -13,6 +13,7 @@
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) NSArray *filtered;
 @end
 
 
@@ -30,13 +31,15 @@
 + (instancetype)presentInView:(NSView *)view items:(NSArray *)items {
     LAFImportListViewController *instance = [self sharedInstance];
     instance.items = items;
+    instance.filtered = items;
+
     if([view isKindOfClass:[NSTextView class]]) {
         [instance showImportListViewInTextView:(NSTextView *)view];
     } else {
         [instance showImportListViewInView:view frame:view.frame];
     }
+
     return instance;
-   
 }
 
 - (instancetype)init {
@@ -54,13 +57,16 @@
     }
     
     if (!self.popover.isShown) {
+        _filtered = _items;
+        [self filterItems];
+        
         [self.popover showRelativeToRect:frame
                                   ofView:view
                            preferredEdge:NSMinYEdge];
     }
 }
 
-- (void)showImportListViewInTextView:(NSTextView *) textView {
+- (void)showImportListViewInTextView:(NSTextView *)textView {
     NSRect frame = [textView mhFrameForCaret];
     [self showImportListViewInView:textView frame:frame];
 }
@@ -80,16 +86,16 @@
     LAFImportListView *view = [self currentListView];
     view.tableView.dataSource = self;
     view.tableView.target = self;
-    view.tableView.doubleAction = @selector(doubleAction);
+    view.tableView.doubleAction = @selector(commitAction);
     view.searchField.delegate = self;
 }
 
-- (void)doubleAction {
+- (void)commitAction {
     LAFImportListView *view = [self currentListView];
     NSIndexSet *indexes = [view.tableView selectedRowIndexes];
     if ([indexes count] == 1) {
         int index = (int)[indexes firstIndex];
-        [_delegate itemSelected:self.items[index]];
+        [_delegate itemSelected:_filtered[index]];
         [self dismiss];
     }
 }
@@ -102,28 +108,73 @@
     [self.popover close];
 }
 
-#pragma mark - NSTextFieldDelegate
-
-- (BOOL)control:(NSControl *)control textShouldBeginEditing:(NSText *)fieldEditor {
+- (void)filterItems {
     LAFImportListView *view = [self currentListView];
 
+    if ([[view.searchField stringValue] length] == 0) {
+        _filtered = _items;
+    } else {
+        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF BEGINSWITH[cd] %@", [view.searchField stringValue]]];
+    }
+    
+    [view.tableView reloadData];
+    [view.tableView scrollRowToVisible:0];
+    
     NSIndexSet *set = [NSIndexSet indexSetWithIndex:0];
     [view.tableView selectRowIndexes:set byExtendingSelection:NO];
+}
+
+#pragma mark - NSTextFieldDelegate
+
+- (void)controlTextDidChange:(NSNotification *)notification {
+    [self filterItems];
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)commandSelector {
+    LAFImportListView *view = [self currentListView];
+    NSIndexSet *indexes = [view.tableView selectedRowIndexes];
+    int index = -1;
+    if ([indexes count] == 1) {
+        index = (int)[indexes firstIndex];
+    }
     
-    return YES;
+    if (commandSelector == @selector(moveDown:)) {
+        index++;
+        if (index > [_filtered count] - 1) {
+            index = (int)[_filtered count] - 1;
+        }
+    } else if (commandSelector == @selector(moveUp:)) {
+        index--;
+        if (index < 0) {
+            index = 0;
+        }
+    } else if (commandSelector == @selector(cancelOperation:)) {
+        [self dismiss];
+    } else if (commandSelector == @selector(insertNewline:)) {
+        [self commitAction];
+    }
+    
+    [view.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    [view.tableView scrollRowToVisible:index];
+    
+    return NO;
+}
+
+-(void)controlTextDidEndEditing:(NSNotification *)notification
+{
+    if ( [[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement ) {
+        [self commitAction];
+    }
 }
 
 #pragma mark - NSTableViewDataSource
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return _items[row];
+    return _filtered[row];
 }
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
-    return [_items count];
-}
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    return [_filtered count];
 }
 
 @end

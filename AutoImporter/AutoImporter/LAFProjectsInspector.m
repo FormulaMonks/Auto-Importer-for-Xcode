@@ -249,7 +249,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         }
         
         [LAFImportListViewController sharedInstance].delegate = self;
-        [LAFImportListViewController presentInView:currentTextView items:items];
+        [LAFImportListViewController presentInView:currentTextView items:[items sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
     }
 }
 
