@@ -115,7 +115,7 @@
     if ([[view.searchField stringValue] length] == 0) {
         _filtered = _items;
     } else {
-        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF BEGINSWITH[cd] %@", [view.searchField stringValue]]];
+        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", [view.searchField stringValue]]];
     }
     
     [view.tableView reloadData];
@@ -181,9 +181,9 @@
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     NSTextFieldCell *cell = aCell;
     if ([cell.objectValue hasSuffix:@".h"]) {
-        [cell setTextColor:[NSColor lightGrayColor]];
-    } else {
         [cell setTextColor:[NSColor grayColor]];
+    } else {
+        [cell setTextColor:[NSColor darkGrayColor]];
     }
 }
 
