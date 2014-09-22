@@ -1,6 +1,8 @@
 TODO:
 
 - insert symbol in caret
+- change text color on cell selection
+- take care of 'enter' key after selecting a cell
 - fix conflict with peckham key
 - when two windows (and thus two projects) are open, there is no distinction between workspaces and symbols
 - add framework headers
