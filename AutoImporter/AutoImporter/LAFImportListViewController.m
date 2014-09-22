@@ -85,6 +85,7 @@
     
     LAFImportListView *view = [self currentListView];
     view.tableView.dataSource = self;
+    view.tableView.delegate = self;
     view.tableView.target = self;
     view.tableView.doubleAction = @selector(commitAction);
     view.searchField.delegate = self;
@@ -175,6 +176,15 @@
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
     return [_filtered count];
+}
+
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    NSTextFieldCell *cell = aCell;
+    if ([cell.objectValue hasSuffix:@".h"]) {
+        [cell setTextColor:[NSColor lightGrayColor]];
+    } else {
+        [cell setTextColor:[NSColor grayColor]];
+    }
 }
 
 @end

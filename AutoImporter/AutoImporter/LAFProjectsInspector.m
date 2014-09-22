@@ -244,12 +244,12 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         NSMutableArray *items = [NSMutableArray array];
         NSArray *projects = [self projectsInCurrentWorkspace];
         for (LAFProjectHeaderCache *project in projects) {
-            [items addObjectsFromArray:[project symbols]];
-            [items addObjectsFromArray:[project headers]];
+            [items addObjectsFromArray:[[project symbols] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+            [items addObjectsFromArray:[[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
         }
         
         [LAFImportListViewController sharedInstance].delegate = self;
-        [LAFImportListViewController presentInView:currentTextView items:[items sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+        [LAFImportListViewController presentInView:currentTextView items:items];
     }
 }
 
