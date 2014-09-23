@@ -70,6 +70,22 @@
     }];
 }
 
+- (void)testHeaders
+{
+    dispatch_group_enter(self.requestGroup);
+    
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
+    [headers refresh:^{
+        XCTAssertTrue([[headers headers] containsObject:[[LAFSymbol alloc] initWithName:@"LAFMyClass1.h"]]);
+        XCTAssertTrue([[headers headers] containsObject:[[LAFSymbol alloc] initWithName:@"LAFMyClass2.h"]]);
+        XCTAssertTrue([[headers headers] containsObject:[[LAFSymbol alloc] initWithName:@"NSColor+MyColor.h"]]);
+        XCTAssertTrue([[headers headers] containsObject:[[LAFSymbol alloc] initWithName:@"LAFSubdirectoryClass1.h"]]);
+        XCTAssertTrue([[headers headers] containsObject:[[LAFSymbol alloc] initWithName:@"LAFAppDelegate.h"]]);
+        
+        dispatch_group_leave(self.requestGroup);
+    }];
+}
+
 - (void)testHeaderChanged
 {
     dispatch_group_enter(self.requestGroup);

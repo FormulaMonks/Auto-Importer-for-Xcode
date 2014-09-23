@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger, LAFSymbolType) {
 @property (nonatomic) LAFSymbolType type;
 @property (nonatomic, strong) NSString *name;
 
+- (instancetype)initWithName:(NSString *)name;
 - (LAFSymbolType)typeFromString:(NSString *)string;
 
 @end
@@ -34,6 +35,7 @@ typedef NS_ENUM(NSInteger, LAFSymbolType) {
 - (instancetype)initWithProjectPath:(NSString *)filePath;
 - (void)refresh:(dispatch_block_t)doneBlock;
 - (void)refreshHeader:(NSString *)headerPath;
+- (BOOL)containsHeader:(NSString *)headerPath;
 - (NSString *)headerForSymbol:(NSString *)name;
 
 @end

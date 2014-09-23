@@ -140,16 +140,19 @@
         index = (int)[indexes firstIndex];
     }
     
+    BOOL ret = NO;
     if (commandSelector == @selector(moveDown:)) {
         index++;
         if (index > [_filtered count] - 1) {
             index = (int)[_filtered count] - 1;
         }
+        ret = YES;
     } else if (commandSelector == @selector(moveUp:)) {
         index--;
         if (index < 0) {
             index = 0;
         }
+        ret = YES;
     } else if (commandSelector == @selector(cancelOperation:)) {
         [self dismiss];
     } else if (commandSelector == @selector(insertNewline:)) {
@@ -159,7 +162,7 @@
     [view.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
     [view.tableView scrollRowToVisible:index];
     
-    return NO;
+    return ret;
 }
 
 -(void)controlTextDidEndEditing:(NSNotification *)notification
@@ -183,9 +186,9 @@
     NSTextFieldCell *cell = aCell;
     LAFSymbol *symbol = (LAFSymbol *)cell.objectValue;
     if ([symbol type] == LAFSymbolTypeHeader) {
-        [cell setTextColor:[NSColor darkGrayColor]];
-    } else {
         [cell setTextColor:[NSColor grayColor]];
+    } else {
+        [cell setTextColor:[NSColor darkGrayColor]];
     }
 }
 

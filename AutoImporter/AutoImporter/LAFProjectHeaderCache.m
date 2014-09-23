@@ -55,9 +55,13 @@
     }];
 }
 
+- (BOOL)containsHeader:(NSString *)headerPath {
+    return [[[_symbolsByHeader keyEnumerator] allObjects] containsObject:[headerPath lastPathComponent]];
+}
+
 - (void)refreshHeader:(NSString *)headerPath {
     for (LAFSymbol *symbol in [_symbolsByHeader objectForKey:[headerPath lastPathComponent]]) {
-        [_headersBySymbols removeObjectForKey:[symbol name]];
+        [_headersBySymbols removeObjectForKey:symbol];
     }
     
     NSMutableArray *symbols = [_symbolsByHeader objectForKey:[headerPath lastPathComponent]];
@@ -175,6 +179,15 @@
 @end
 
 @implementation LAFSymbol
+
+- (instancetype)initWithName:(NSString *)name {
+    self = [super init];
+    if (self) {
+        _name = name;
+    }
+    
+    return self;
+}
 
 - (NSUInteger)hash {
     return [_name hash];

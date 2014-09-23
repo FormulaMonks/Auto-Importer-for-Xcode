@@ -97,7 +97,9 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     NSString *path = [[[notification object] fileURL] path];
     if ([path hasSuffix:@".h"]) {
         for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
-            [headers refreshHeader:path];
+            if ([headers containsHeader:path]) {
+                [headers refreshHeader:path];                
+            }
         }
     }
 }
