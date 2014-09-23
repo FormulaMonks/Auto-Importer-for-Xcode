@@ -6,15 +6,23 @@
 //  Copyright (c) 2014 luisfloreani.com. All rights reserved.
 //
 
+#import <Foundation/NSProxy.h>
 #import "LAFProjectHeaderCache.h"
 #import "XCProject.h"
 #import "XCSourceFile.h"
 #import "XCSourceFile+Path.h"
 
+#define kPatternRegExp @"regexp"
+#define kPatternType @"type"
+
 @interface LAFProjectHeaderCache()
 
-@property (nonatomic, strong) NSMutableDictionary *headersBySymbols;
-@property (nonatomic, strong) NSMutableDictionary *symbolsByHeader;
+// value is NSString
+@property (nonatomic, strong) NSMapTable *headersBySymbols;
+
+// value is an array of LAFSymbol
+@property (nonatomic, strong) NSMapTable *symbolsByHeader;
+
 @property (nonatomic, strong) NSOperationQueue *headersQueue;
 
 @end
@@ -26,8 +34,8 @@
     self = [super init];
     if (self) {
         _filePath = filePath;
-        _headersBySymbols = [NSMutableDictionary new];
-        _symbolsByHeader = [NSMutableDictionary new];
+        _headersBySymbols = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
+        _symbolsByHeader = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
         _headersQueue = [NSOperationQueue new];
         _headersQueue.maxConcurrentOperationCount = 1;
     }
@@ -48,26 +56,40 @@
 }
 
 - (void)refreshHeader:(NSString *)headerPath {
-    for (NSString *symbol in _symbolsByHeader[[headerPath lastPathComponent]]) {
-        [_headersBySymbols removeObjectForKey:symbol];
+    for (LAFSymbol *symbol in [_symbolsByHeader objectForKey:[headerPath lastPathComponent]]) {
+        [_headersBySymbols removeObjectForKey:[symbol name]];
     }
     
-    NSMutableArray *symbols = _symbolsByHeader[[headerPath lastPathComponent]];
+    NSMutableArray *symbols = [_symbolsByHeader objectForKey:[headerPath lastPathComponent]];
     [symbols removeAllObjects];
     
     [self processHeaderPath:headerPath];
 }
 
-- (NSString *)headerForSymbol:(NSString *)symbol {
-    return _headersBySymbols[symbol];
+- (NSString *)headerForSymbol:(NSString *)name {
+    LAFSymbol *symbol = [LAFSymbol new];
+    symbol.name = name;
+    return [_headersBySymbols objectForKey:symbol];
 }
 
 - (NSArray *)headers {
-    return [_headersBySymbols allValues];
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSString *header in [[_symbolsByHeader keyEnumerator] allObjects]) {
+        LAFSymbol *symbol = [LAFSymbol new];
+        symbol.name = header;
+        symbol.type = LAFSymbolTypeHeader;
+        [array addObject:symbol];
+    }
+    return array;
 }
 
 - (NSArray *)symbols {
-    return [_headersBySymbols allKeys];
+    NSMutableArray *symbols = [NSMutableArray array];
+    for (NSString *header in [[_symbolsByHeader keyEnumerator] allObjects]) {
+        NSArray *objs = [_symbolsByHeader objectForKey:header];
+        [symbols addObjectsFromArray:objs];
+    }
+    return symbols;
 }
 
 - (NSArray *)fullPathsForFiles:(NSSet *)fileNames inDirectory:(NSString *)directoryPath {
@@ -88,34 +110,42 @@
 - (void)processHeaderPath:(NSString *)headerPath {
     NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
     
-    NSError *error = nil;
-    NSString *classDefinition = @"(?:@interface|@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)";
-//    NSString *classDefinition = @"@(?:interface|protocol)\\s+(\\w+)";
-    NSRegularExpression *regex = [NSRegularExpression
-                                  regularExpressionWithPattern:classDefinition
-                                  options:NSRegularExpressionCaseInsensitive
-                                  error:&error];
-    
-    if (error) {
-        NSLog(@"processing header path error: %@", error);
-        return;
-    }
-    
-    NSMutableArray *symbols = _symbolsByHeader[headerPath];
+    NSMutableArray *symbols = [_symbolsByHeader objectForKey:headerPath];
     if (!symbols) {
         symbols = [NSMutableArray array];
-        _symbolsByHeader[[headerPath lastPathComponent]] = symbols;
+        [_symbolsByHeader setObject:symbols forKey:[headerPath lastPathComponent]];
     }
+
+    NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeClass"};
+    NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeProtocol"};
+    NSArray *patterns = @[pattern1, pattern2];
     
-    [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-        NSRange matchRange = [match rangeAtIndex:1];
-        NSString *matchString = [content substringWithRange:matchRange];
-        NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
-            _headersBySymbols[matchTrim] = [headerPath lastPathComponent];
-            [symbols addObject:matchTrim];
+    for (NSDictionary *pattern in patterns) {
+        NSError *error = nil;
+        NSString *classRegExp = pattern[kPatternRegExp];
+        NSRegularExpression *regex = [NSRegularExpression
+                                      regularExpressionWithPattern:classRegExp
+                                      options:NSRegularExpressionCaseInsensitive
+                                      error:&error];
+        
+        if (error) {
+            NSLog(@"processing header path error: %@", error);
+            continue;
         }
-    }];
+        
+        [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+            NSRange matchRange = [match rangeAtIndex:1];
+            NSString *matchString = [content substringWithRange:matchRange];
+            NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
+                LAFSymbol *element = [LAFSymbol new];
+                element.name = matchTrim;
+                element.type = [element typeFromString:pattern[kPatternType]];
+                [_headersBySymbols setObject:[headerPath lastPathComponent] forKey:element];
+                [symbols addObject:element];
+            }
+        }];
+    }
 }
 
 - (void)updateProject:(XCProject *)project {
@@ -140,6 +170,59 @@
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
     
     NSLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersBySymbols count], [[project filePath] lastPathComponent], executionTime);
+}
+
+@end
+
+@implementation LAFSymbol
+
+- (NSUInteger)hash {
+    return [_name hash];
+}
+
+- (BOOL)isEqual:(id)object {
+    if (![object isKindOfClass:[LAFSymbol class]])
+        return NO;
+    
+    return [self.name isEqualToString:[object name]];
+}
+
+- (LAFSymbolType)typeFromString:(NSString *)string {
+    if ([string isEqualToString:@"LAFSymbolTypeClass"]) {
+        return LAFSymbolTypeClass;
+    } else if ([string isEqualToString:@"LAFSymbolTypeProtocol"]) {
+        return LAFSymbolTypeProtocol;
+    } else if ([string isEqualToString:@"LAFSymbolTypeHeader"]) {
+        return LAFSymbolTypeHeader;
+    } else {
+        return LAFSymbolTypeClass;
+    }
+}
+
+- (NSString *)typeString {
+    switch (_type) {
+        case LAFSymbolTypeClass:
+            return @"C";
+            break;
+        case LAFSymbolTypeProtocol:
+            return @"P";
+            break;
+        case LAFSymbolTypeHeader:
+            return @"H";
+            break;
+    }
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"[%@] %@", [self typeString], _name];
+}
+
+- (NSComparisonResult)localizedCaseInsensitiveCompare:(id)obj {
+    return [_name localizedCaseInsensitiveCompare:[obj name]];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    return self;
 }
 
 @end

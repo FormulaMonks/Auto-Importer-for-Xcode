@@ -9,6 +9,7 @@
 #import "LAFImportListViewController.h"
 #import "LAFImportListView.h"
 #import "NSTextView+Operations.h"
+#import "LAFProjectHeaderCache.h"
 
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;
@@ -96,7 +97,7 @@
     NSIndexSet *indexes = [view.tableView selectedRowIndexes];
     if ([indexes count] == 1) {
         int index = (int)[indexes firstIndex];
-        [_delegate itemSelected:_filtered[index]];
+        [_delegate itemSelected:[_filtered[index] name]];
         [self dismiss];
     }
 }
@@ -115,7 +116,7 @@
     if ([[view.searchField stringValue] length] == 0) {
         _filtered = _items;
     } else {
-        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", [view.searchField stringValue]]];
+        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.name CONTAINS[cd] %@", [view.searchField stringValue]]];
     }
     
     [view.tableView reloadData];
@@ -180,10 +181,11 @@
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     NSTextFieldCell *cell = aCell;
-    if ([cell.objectValue hasSuffix:@".h"]) {
-        [cell setTextColor:[NSColor grayColor]];
-    } else {
+    LAFSymbol *symbol = (LAFSymbol *)cell.objectValue;
+    if ([symbol type] == LAFSymbolTypeHeader) {
         [cell setTextColor:[NSColor darkGrayColor]];
+    } else {
+        [cell setTextColor:[NSColor grayColor]];
     }
 }
 

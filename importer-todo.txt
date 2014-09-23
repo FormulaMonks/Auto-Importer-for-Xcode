@@ -4,6 +4,7 @@ TODO:
 - change text color on cell selection
 - take care of 'enter' key after selecting a cell
 - fix conflict with peckham key
+- when changing a class name, it appears repeated in the list
 - when two windows (and thus two projects) are open, there is no distinction between workspaces and symbols
 - add framework headers
 - tests!

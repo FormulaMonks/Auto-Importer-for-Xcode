@@ -8,15 +8,32 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, LAFSymbolType) {
+    LAFSymbolTypeClass = 0,
+    LAFSymbolTypeProtocol = 1,
+    LAFSymbolTypeHeader = 2,
+};
+
+@interface LAFSymbol : NSObject
+@property (nonatomic) LAFSymbolType type;
+@property (nonatomic, strong) NSString *name;
+
+- (LAFSymbolType)typeFromString:(NSString *)string;
+
+@end
+
 @interface LAFProjectHeaderCache : NSObject
 
 @property (nonatomic, readonly) NSString *filePath;
+
+// array of LAFSymbol
 @property (nonatomic, readonly) NSArray *symbols;
+
 @property (nonatomic, readonly) NSArray *headers;
 
 - (instancetype)initWithProjectPath:(NSString *)filePath;
 - (void)refresh:(dispatch_block_t)doneBlock;
 - (void)refreshHeader:(NSString *)headerPath;
-- (NSString *)headerForSymbol:(NSString *)symbol;
+- (NSString *)headerForSymbol:(NSString *)name;
 
 @end
