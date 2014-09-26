@@ -111,44 +111,52 @@
     return fullPaths;
 }
 
-- (void)processHeaderPath:(NSString *)headerPath {
-    NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:nil];
-    
-    NSMutableArray *symbols = [_symbolsByHeader objectForKey:headerPath];
-    if (!symbols) {
-        symbols = [NSMutableArray array];
-        [_symbolsByHeader setObject:symbols forKey:[headerPath lastPathComponent]];
-    }
-
-    NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeClass"};
-    NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeProtocol"};
-    NSArray *patterns = @[pattern1, pattern2];
-    
-    for (NSDictionary *pattern in patterns) {
+- (BOOL)processHeaderPath:(NSString *)headerPath {
+    @autoreleasepool {
         NSError *error = nil;
-        NSString *classRegExp = pattern[kPatternRegExp];
-        NSRegularExpression *regex = [NSRegularExpression
-                                      regularExpressionWithPattern:classRegExp
-                                      options:NSRegularExpressionCaseInsensitive
-                                      error:&error];
-        
+        NSString *content = [NSString stringWithContentsOfFile:headerPath encoding:NSUTF8StringEncoding error:&error];
         if (error) {
-            NSLog(@"processing header path error: %@", error);
-            continue;
+            return NO;
         }
         
-        [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-            NSRange matchRange = [match rangeAtIndex:1];
-            NSString *matchString = [content substringWithRange:matchRange];
-            NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
-                LAFSymbol *element = [LAFSymbol new];
-                element.name = matchTrim;
-                element.type = [element typeFromString:pattern[kPatternType]];
-                [_headersBySymbols setObject:[headerPath lastPathComponent] forKey:element];
-                [symbols addObject:element];
+        NSMutableArray *symbols = [_symbolsByHeader objectForKey:headerPath];
+        if (!symbols) {
+            symbols = [NSMutableArray array];
+            [_symbolsByHeader setObject:symbols forKey:[headerPath lastPathComponent]];
+        }
+        
+        NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeClass"};
+        NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeProtocol"};
+        NSArray *patterns = @[pattern1, pattern2];
+        
+        for (NSDictionary *pattern in patterns) {
+            NSError *error = nil;
+            NSString *classRegExp = pattern[kPatternRegExp];
+            NSRegularExpression *regex = [NSRegularExpression
+                                          regularExpressionWithPattern:classRegExp
+                                          options:NSRegularExpressionCaseInsensitive
+                                          error:&error];
+            
+            if (error) {
+                NSLog(@"processing header path error: %@", error);
+                continue;
             }
-        }];
+            
+            [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+                NSRange matchRange = [match rangeAtIndex:1];
+                NSString *matchString = [content substringWithRange:matchRange];
+                NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
+                    LAFSymbol *element = [LAFSymbol new];
+                    element.name = matchTrim;
+                    element.type = [element typeFromString:pattern[kPatternType]];
+                    [_headersBySymbols setObject:[headerPath lastPathComponent] forKey:element];
+                    [symbols addObject:element];
+                }
+            }];
+        }
+        
+        return YES;
     }
 }
 
@@ -156,9 +164,7 @@
     NSDate *start = [NSDate date];
     NSMutableSet *missingFiles = [NSMutableSet set];
     for (XCSourceFile *header in project.headerFiles) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[header fullPath]]) {
-            [self processHeaderPath:[header fullPath]];
-        } else {
+        if (![self processHeaderPath:[header fullPath]]) {
             [missingFiles addObject:[[header pathRelativeToProjectRoot] lastPathComponent]];
         }
     }
