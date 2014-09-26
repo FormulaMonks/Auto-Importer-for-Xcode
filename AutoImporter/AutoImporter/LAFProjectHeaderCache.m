@@ -18,10 +18,10 @@
 @interface LAFProjectHeaderCache()
 
 // value is NSString
-@property (nonatomic, strong) NSMapTable *headersBySymbols;
+@property (nonatomic, strong) NSMapTable *headersByIdentifiers;
 
-// value is an array of LAFSymbol
-@property (nonatomic, strong) NSMapTable *symbolsByHeader;
+// value is an array of LAFIdentifier
+@property (nonatomic, strong) NSMapTable *identifiersByHeader;
 
 @property (nonatomic, strong) NSOperationQueue *headersQueue;
 
@@ -34,8 +34,8 @@
     self = [super init];
     if (self) {
         _filePath = filePath;
-        _headersBySymbols = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
-        _symbolsByHeader = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
+        _headersByIdentifiers = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
+        _identifiersByHeader = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
         _headersQueue = [NSOperationQueue new];
         _headersQueue.maxConcurrentOperationCount = 1;
     }
@@ -43,8 +43,8 @@
 }
 
 - (void)refresh:(dispatch_block_t)doneBlock {
-    [_headersBySymbols removeAllObjects];
-    [_symbolsByHeader removeAllObjects];
+    [_headersByIdentifiers removeAllObjects];
+    [_identifiersByHeader removeAllObjects];
     
     XCProject *project = [XCProject projectWithFilePath:_filePath];
     [_headersQueue addOperationWithBlock:^{
@@ -56,44 +56,44 @@
 }
 
 - (BOOL)containsHeader:(NSString *)headerPath {
-    return [[[_symbolsByHeader keyEnumerator] allObjects] containsObject:[headerPath lastPathComponent]];
+    return [[[_identifiersByHeader keyEnumerator] allObjects] containsObject:[headerPath lastPathComponent]];
 }
 
 - (void)refreshHeader:(NSString *)headerPath {
-    for (LAFSymbol *symbol in [_symbolsByHeader objectForKey:[headerPath lastPathComponent]]) {
-        [_headersBySymbols removeObjectForKey:symbol];
+    for (LAFIdentifier *identifier in [_identifiersByHeader objectForKey:[headerPath lastPathComponent]]) {
+        [_headersByIdentifiers removeObjectForKey:identifier];
     }
     
-    NSMutableArray *symbols = [_symbolsByHeader objectForKey:[headerPath lastPathComponent]];
-    [symbols removeAllObjects];
+    NSMutableArray *identifiers = [_identifiersByHeader objectForKey:[headerPath lastPathComponent]];
+    [identifiers removeAllObjects];
     
     [self processHeaderPath:headerPath];
 }
 
-- (NSString *)headerForSymbol:(NSString *)name {
-    LAFSymbol *symbol = [LAFSymbol new];
-    symbol.name = name;
-    return [_headersBySymbols objectForKey:symbol];
+- (NSString *)headerForIdentifier:(NSString *)name {
+    LAFIdentifier *identifier = [LAFIdentifier new];
+    identifier.name = name;
+    return [_headersByIdentifiers objectForKey:identifier];
 }
 
 - (NSArray *)headers {
     NSMutableArray *array = [NSMutableArray array];
-    for (NSString *header in [[_symbolsByHeader keyEnumerator] allObjects]) {
-        LAFSymbol *symbol = [LAFSymbol new];
-        symbol.name = header;
-        symbol.type = LAFSymbolTypeHeader;
-        [array addObject:symbol];
+    for (NSString *header in [[_identifiersByHeader keyEnumerator] allObjects]) {
+        LAFIdentifier *identifier = [LAFIdentifier new];
+        identifier.name = header;
+        identifier.type = LAFIdentifierTypeHeader;
+        [array addObject:identifier];
     }
     return array;
 }
 
-- (NSArray *)symbols {
-    NSMutableArray *symbols = [NSMutableArray array];
-    for (NSString *header in [[_symbolsByHeader keyEnumerator] allObjects]) {
-        NSArray *objs = [_symbolsByHeader objectForKey:header];
-        [symbols addObjectsFromArray:objs];
+- (NSArray *)identifiers {
+    NSMutableArray *identifiers = [NSMutableArray array];
+    for (NSString *header in [[_identifiersByHeader keyEnumerator] allObjects]) {
+        NSArray *objs = [_identifiersByHeader objectForKey:header];
+        [identifiers addObjectsFromArray:objs];
     }
-    return symbols;
+    return identifiers;
 }
 
 - (NSArray *)fullPathsForFiles:(NSSet *)fileNames inDirectory:(NSString *)directoryPath {
@@ -119,14 +119,14 @@
             return NO;
         }
         
-        NSMutableArray *symbols = [_symbolsByHeader objectForKey:headerPath];
-        if (!symbols) {
-            symbols = [NSMutableArray array];
-            [_symbolsByHeader setObject:symbols forKey:[headerPath lastPathComponent]];
+        NSMutableArray *identifiers = [_identifiersByHeader objectForKey:headerPath];
+        if (!identifiers) {
+            identifiers = [NSMutableArray array];
+            [_identifiersByHeader setObject:identifiers forKey:[headerPath lastPathComponent]];
         }
         
-        NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeClass"};
-        NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFSymbolTypeProtocol"};
+        NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFIdentifierTypeClass"};
+        NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFIdentifierTypeProtocol"};
         NSArray *patterns = @[pattern1, pattern2];
         
         for (NSDictionary *pattern in patterns) {
@@ -147,11 +147,11 @@
                 NSString *matchString = [content substringWithRange:matchRange];
                 NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
-                    LAFSymbol *element = [LAFSymbol new];
+                    LAFIdentifier *element = [LAFIdentifier new];
                     element.name = matchTrim;
                     element.type = [element typeFromString:pattern[kPatternType]];
-                    [_headersBySymbols setObject:[headerPath lastPathComponent] forKey:element];
-                    [symbols addObject:element];
+                    [_headersByIdentifiers setObject:[headerPath lastPathComponent] forKey:element];
+                    [identifiers addObject:element];
                 }
             }];
         }
@@ -179,12 +179,12 @@
     NSDate *methodFinish = [NSDate date];
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
     
-    NSLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersBySymbols count], [[project filePath] lastPathComponent], executionTime);
+    NSLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersByIdentifiers count], [[project filePath] lastPathComponent], executionTime);
 }
 
 @end
 
-@implementation LAFSymbol
+@implementation LAFIdentifier
 
 - (instancetype)initWithName:(NSString *)name {
     self = [super init];
@@ -200,33 +200,33 @@
 }
 
 - (BOOL)isEqual:(id)object {
-    if (![object isKindOfClass:[LAFSymbol class]])
+    if (![object isKindOfClass:[LAFIdentifier class]])
         return NO;
     
     return [self.name isEqualToString:[object name]];
 }
 
-- (LAFSymbolType)typeFromString:(NSString *)string {
-    if ([string isEqualToString:@"LAFSymbolTypeClass"]) {
-        return LAFSymbolTypeClass;
-    } else if ([string isEqualToString:@"LAFSymbolTypeProtocol"]) {
-        return LAFSymbolTypeProtocol;
-    } else if ([string isEqualToString:@"LAFSymbolTypeHeader"]) {
-        return LAFSymbolTypeHeader;
+- (LAFIdentifierType)typeFromString:(NSString *)string {
+    if ([string isEqualToString:@"LAFIdentifierTypeClass"]) {
+        return LAFIdentifierTypeClass;
+    } else if ([string isEqualToString:@"LAFIdentifierTypeProtocol"]) {
+        return LAFIdentifierTypeProtocol;
+    } else if ([string isEqualToString:@"LAFIdentifierTypeHeader"]) {
+        return LAFIdentifierTypeHeader;
     } else {
-        return LAFSymbolTypeClass;
+        return LAFIdentifierTypeClass;
     }
 }
 
 - (NSString *)typeString {
     switch (_type) {
-        case LAFSymbolTypeClass:
+        case LAFIdentifierTypeClass:
             return @"C";
             break;
-        case LAFSymbolTypeProtocol:
+        case LAFIdentifierTypeProtocol:
             return @"P";
             break;
-        case LAFSymbolTypeHeader:
+        case LAFIdentifierTypeHeader:
             return @"H";
             break;
     }

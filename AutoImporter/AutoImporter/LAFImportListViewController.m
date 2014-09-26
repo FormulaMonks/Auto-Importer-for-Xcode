@@ -53,7 +53,7 @@
 
 - (void)showImportListViewInView:(NSView *)view frame:(NSRect)frame {
     if (!view) {
-        NSLog(@"Can't show symbols import list since view is nil");
+        NSLog(@"Can't show identifiers import list since view is nil");
         return;
     }
     
@@ -184,8 +184,8 @@
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     NSTextFieldCell *cell = aCell;
-    LAFSymbol *symbol = (LAFSymbol *)cell.objectValue;
-    if ([symbol type] == LAFSymbolTypeHeader) {
+    LAFIdentifier *identifier = (LAFIdentifier *)cell.objectValue;
+    if ([identifier type] == LAFIdentifierTypeHeader) {
         [cell setTextColor:[NSColor grayColor]];
     } else {
         [cell setTextColor:[NSColor darkGrayColor]];

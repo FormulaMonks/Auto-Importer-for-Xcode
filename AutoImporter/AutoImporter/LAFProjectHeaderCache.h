@@ -8,18 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, LAFSymbolType) {
-    LAFSymbolTypeClass = 0,
-    LAFSymbolTypeProtocol = 1,
-    LAFSymbolTypeHeader = 2,
+typedef NS_ENUM(NSInteger, LAFIdentifierType) {
+    LAFIdentifierTypeClass = 0,
+    LAFIdentifierTypeProtocol = 1,
+    LAFIdentifierTypeHeader = 2,
 };
 
-@interface LAFSymbol : NSObject
-@property (nonatomic) LAFSymbolType type;
+@interface LAFIdentifier : NSObject
+@property (nonatomic) LAFIdentifierType type;
 @property (nonatomic, strong) NSString *name;
 
 - (instancetype)initWithName:(NSString *)name;
-- (LAFSymbolType)typeFromString:(NSString *)string;
+- (LAFIdentifierType)typeFromString:(NSString *)string;
 
 @end
 
@@ -27,8 +27,8 @@ typedef NS_ENUM(NSInteger, LAFSymbolType) {
 
 @property (nonatomic, readonly) NSString *filePath;
 
-// array of LAFSymbol
-@property (nonatomic, readonly) NSArray *symbols;
+// array of LAFIdentifier
+@property (nonatomic, readonly) NSArray *identifiers;
 
 @property (nonatomic, readonly) NSArray *headers;
 
@@ -36,6 +36,6 @@ typedef NS_ENUM(NSInteger, LAFSymbolType) {
 - (void)refresh:(dispatch_block_t)doneBlock;
 - (void)refreshHeader:(NSString *)headerPath;
 - (BOOL)containsHeader:(NSString *)headerPath;
-- (NSString *)headerForSymbol:(NSString *)name;
+- (NSString *)headerForIdentifier:(NSString *)name;
 
 @end

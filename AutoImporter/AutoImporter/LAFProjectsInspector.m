@@ -192,9 +192,9 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     return [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
 }
 
-- (LAFImportResult)importSymbol:(NSString *)symbol headerOut:(NSMutableString *)headerOut {
+- (LAFImportResult)importIdentifier:(NSString *)identifier headerOut:(NSMutableString *)headerOut {
     for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
-        NSString *header = [headers headerForSymbol:symbol];
+        NSString *header = [headers headerForIdentifier:identifier];
         if (header) {
             [headerOut appendString:header];
             
@@ -202,7 +202,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         }
     }
 
-    [headerOut appendString:symbol];
+    [headerOut appendString:identifier];
     return LAFImportResultNotFound;
 }
 
@@ -216,7 +216,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
             color = [NSColor colorWithRed:1.0 green:1.0 blue:0.8 alpha:1.0];
             break;
         case LAFImportResultNotFound:
-            text = [NSString stringWithFormat:@"Symbol '%@' not found", item];
+            text = [NSString stringWithFormat:@"Identifier '%@' not found", item];
             color = [NSColor colorWithRed:1.0 green:0.8 blue:0.8 alpha:1.0];
             break;
         case LAFImportResultDone:
@@ -240,13 +240,13 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     } else if (range.length > 0) {
         NSString *selection = [[currentTextView string] substringWithRange:range];
         NSMutableString *headerOut = [NSMutableString string];
-        LAFImportResult result = [self importSymbol:selection headerOut:headerOut];
+        LAFImportResult result = [self importIdentifier:selection headerOut:headerOut];
         [self showCaretTextBasedOn:result item:headerOut];
     } else {
         NSMutableArray *items = [NSMutableArray array];
         NSArray *projects = [self projectsInCurrentWorkspace];
         for (LAFProjectHeaderCache *project in projects) {
-            [items addObjectsFromArray:[[project symbols] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+            [items addObjectsFromArray:[[project identifiers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
             [items addObjectsFromArray:[[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
         }
         
@@ -378,7 +378,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         [self showCaretTextBasedOn:result item:item];
     } else {
         NSMutableString *headerOut = [NSMutableString string];
-        result = [self importSymbol:item headerOut:headerOut];
+        result = [self importIdentifier:item headerOut:headerOut];
         [self showCaretTextBasedOn:result item:headerOut];
     }
 }
