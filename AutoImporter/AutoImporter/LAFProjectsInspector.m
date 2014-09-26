@@ -377,6 +377,12 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         result = [self importHeader:item];
         [self showCaretTextBasedOn:result item:item];
     } else {
+        // insert text
+        NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+        NSRange range = currentTextView.selectedRange;
+        [currentTextView insertText:item replacementRange:range];
+
+        // notify
         NSMutableString *headerOut = [NSMutableString string];
         result = [self importIdentifier:item headerOut:headerOut];
         [self showCaretTextBasedOn:result item:headerOut];
