@@ -36,7 +36,7 @@
 
     if (searchText) {
         LAFImportListView *listView = [instance currentListView];
-        [listView.searchField setStringValue:searchText];        
+        [listView.searchField setStringValue:searchText];
     }
 
     if([view isKindOfClass:[NSTextView class]]) {

@@ -12,4 +12,8 @@
 
 + (instancetype)sharedInspector;
 
+- (void)updateHeader:(NSString *)headerPath;
+- (void)updateProject:(NSString *)projectPath;
+- (void)closeProject:(NSString *)projectPath;
+
 @end

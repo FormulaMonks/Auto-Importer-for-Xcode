@@ -1,8 +1,12 @@
 TODO:
 
+- when suggesting from selection, remove selection on search field
 - change text color on cell selection
 - take care of 'enter' key after selecting a cell
 - fix conflict with peckham key
+- profile
+
 - when two windows (and thus two projects) are open, there is no distinction between workspaces and symbols
 - add framework headers
+- index categories and their methods
 - tests!

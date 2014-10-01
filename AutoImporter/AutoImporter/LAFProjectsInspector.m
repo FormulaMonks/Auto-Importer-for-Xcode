@@ -52,26 +52,6 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
                                                      name:@"LAFShowHeaders"
                                                    object:nil];
 
-        [notificationCenter addObserver:self
-                               selector:@selector(projectDidChange:)
-                                   name:@"PBXProjectDidOpenNotification"
-                                 object:nil];
-        
-        [notificationCenter addObserver:self
-                               selector:@selector(projectDidChange:)
-                                   name:@"PBXProjectDidChangeNotification"
-                                 object:nil];
-        
-        [notificationCenter addObserver:self
-                               selector:@selector(projectDidClose:)
-                                   name:@"PBXProjectDidCloseNotification"
-                                 object:nil];
-
-        [notificationCenter addObserver:self
-                               selector:@selector(fileDidSave:)
-                                   name:@"IDEEditorDocumentDidSaveNotification"
-                                 object:nil];
-
 //        [notificationCenter addObserver:self
 //                               selector:@selector(fileDidChange:)
 //                                   name:@"IDEEditorDocumentWillCloseNotification"
@@ -92,24 +72,48 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)fileDidSave:(NSNotification *)notification {
-    NSLog(@"saved file on workspace %@", [self currentWorkspace]);
-    NSString *path = [[[notification object] fileURL] path];
-    if ([path hasSuffix:@".h"]) {
-        for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
-            if ([headers containsHeader:path]) {
-                [headers refreshHeader:path];                
-            }
+- (void)updateHeader:(NSString *)headerPath {
+    for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
+        if ([headers containsHeader:headerPath]) {
+            [headers refreshHeader:headerPath];
         }
     }
 }
 
-- (void)projectDidClose:(NSNotification *)notification {
-    NSString *path = [self filePathForProjectFromNotification:notification];
+- (void)updateProject:(NSString *)projectPath {
+    NSAssert([self currentWorkspace], @"workspace can't be nil");
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:projectPath]) {
+        NSLog(@"project path not found %@", projectPath);
+        return;
+    }
+    
+    LAFProjectHeaderCache *projectCache = nil;
+    for (LAFProjectHeaderCache *cache in [self projectsInCurrentWorkspace]) {
+        if ([cache.filePath isEqualToString:projectPath]) {
+            projectCache = cache;
+            break;
+        }
+    }
+    
+    if (!projectCache) {
+        NSLog(@"creating project %@ for workspace %@", [projectPath lastPathComponent], [[self currentWorkspace] lastPathComponent]);
+        
+        projectCache = [[LAFProjectHeaderCache alloc] initWithProjectPath:projectPath];
+        [[self projectsInCurrentWorkspace] addObject:projectCache];
+    }
+    
+    _loading = YES;
+    [projectCache refresh:^{
+        _loading = NO;
+    }];
+}
+
+- (void)closeProject:(NSString *)projectPath {
     LAFProjectHeaderCache *toRemove = nil;
     NSMutableArray *projects = [self projectsInCurrentWorkspace];
     for (LAFProjectHeaderCache *headers in projects) {
-        if ([headers.filePath isEqualToString:path]) {
+        if ([headers.filePath isEqualToString:projectPath]) {
             toRemove = headers;
             break;
         }
@@ -130,63 +134,12 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     return projects;
 }
 
-- (void)projectDidChange:(NSNotification *)notification {
-    NSString *filePath = [self filePathForProjectFromNotification:notification];
-
-    if (filePath) {
-        [self updateProjectWithPath:filePath];
-    }
-}
-
 - (NSString *)currentWorkspace {
     return @"workspace";
 // this code below is not working if tried a few moments after opening xcode
 //    NSString *workspacePath = [MHXcodeDocumentNavigator currentWorkspacePath];
 //    return workspacePath;
 }
-
-- (void)updateProjectWithPath:(NSString *)path {
-    NSAssert([self currentWorkspace], @"workspace can't be nil");
-    
-    if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSLog(@"project path not found %@", path);
-        return;
-    }
-    
-    LAFProjectHeaderCache *projectCache = nil;
-    for (LAFProjectHeaderCache *cache in [self projectsInCurrentWorkspace]) {
-        if ([cache.filePath isEqualToString:path]) {
-            projectCache = cache;
-            break;
-        }
-    }
-    
-    if (!projectCache) {
-        NSLog(@"creating project %@ for workspace %@", [path lastPathComponent], [[self currentWorkspace] lastPathComponent]);
-
-        projectCache = [[LAFProjectHeaderCache alloc] initWithProjectPath:path];
-        [[self projectsInCurrentWorkspace] addObject:projectCache];
-    }
-    
-    _loading = YES;
-    [projectCache refresh:^{
-        _loading = NO;
-    }];
-
-}
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-
-- (NSString *)filePathForProjectFromNotification:(NSNotification *)notification {
-    if ([notification.object respondsToSelector:@selector(projectFilePath)]) {
-        NSString *pbxProjPath = [notification.object performSelector:@selector(projectFilePath)];
-        return [pbxProjPath stringByDeletingLastPathComponent];
-    }
-    return nil;
-}
-
-#pragma clang diagnostic pop
 
 - (LAFImportResult)importHeader:(NSString *)header {
     return [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];

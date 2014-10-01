@@ -9,6 +9,7 @@
 #import <Carbon/Carbon.h>
 #import "LAFAutoImporter.h"
 #import "LAFProjectsInspector.h"
+#import "LAFIDENotificationHandler.h"
 
 static LAFAutoImporter *sharedPlugin;
 
@@ -48,7 +49,7 @@ static OSStatus lafHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEve
 {
     if (self = [super init]) {
         // init inspector
-        [LAFProjectsInspector sharedInspector];
+        [LAFIDENotificationHandler sharedHandler];
         
         // reference to plugin's bundle, for resource acccess
         self.bundle = plugin;
