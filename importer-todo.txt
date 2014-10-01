@@ -2,6 +2,7 @@ MUST-FIX:
 
 - fix conflict with peckham key
 - profile
+- tests!
 
 TODO:
 
@@ -9,4 +10,3 @@ TODO:
 - when two windows (and thus two projects) are open, there is no distinction between workspaces and symbols
 - add framework headers
 - index categories and their methods
-- tests!
