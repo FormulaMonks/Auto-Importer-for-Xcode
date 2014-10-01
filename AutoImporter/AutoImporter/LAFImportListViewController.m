@@ -94,6 +94,7 @@
     view.tableView.delegate = self;
     view.tableView.target = self;
     view.tableView.doubleAction = @selector(commitAction);
+    view.tableView.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
     view.searchField.delegate = self;
 }
 
@@ -179,6 +180,10 @@
 
 #pragma mark - NSTableViewDataSource
 
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    return NO;
+}
+
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     return _filtered[row];
 }
@@ -195,6 +200,14 @@
     } else {
         [cell setTextColor:[NSColor darkGrayColor]];
     }
+    
+    if ([[aTableView selectedRowIndexes] containsIndex:rowIndex]) {
+        [aCell setBackgroundColor: [NSColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0]];
+    } else {
+        [aCell setBackgroundColor: [NSColor whiteColor]];
+    }
+    [aCell setDrawsBackground:YES];
+
 }
 
 @end
