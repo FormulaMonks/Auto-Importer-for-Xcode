@@ -17,9 +17,9 @@
 
 @interface LAFImportListViewController : NSObject
 
-@property ( nonatomic, weak) id<LAFImportListViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<LAFImportListViewControllerDelegate> delegate;
 
 + (instancetype)sharedInstance;
-+ (instancetype)presentInView:(NSView *)view items:(NSArray *)items;
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items searchText:(NSString *)searchText;
 
 @end

@@ -29,10 +29,15 @@
     return _viewController;
 }
 
-+ (instancetype)presentInView:(NSView *)view items:(NSArray *)items {
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items searchText:(NSString *)searchText {
     LAFImportListViewController *instance = [self sharedInstance];
     instance.items = items;
     instance.filtered = items;
+
+    if (searchText) {
+        LAFImportListView *listView = [instance currentListView];
+        [listView.searchField setStringValue:searchText];        
+    }
 
     if([view isKindOfClass:[NSTextView class]]) {
         [instance showImportListViewInTextView:(NSTextView *)view];

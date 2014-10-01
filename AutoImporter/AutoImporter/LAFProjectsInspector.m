@@ -241,18 +241,28 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
         NSString *selection = [[currentTextView string] substringWithRange:range];
         NSMutableString *headerOut = [NSMutableString string];
         LAFImportResult result = [self importIdentifier:selection headerOut:headerOut];
-        [self showCaretTextBasedOn:result item:headerOut];
-    } else {
-        NSMutableArray *items = [NSMutableArray array];
-        NSArray *projects = [self projectsInCurrentWorkspace];
-        for (LAFProjectHeaderCache *project in projects) {
-            [items addObjectsFromArray:[[project identifiers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
-            [items addObjectsFromArray:[[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+        if (result != LAFImportResultNotFound) {
+            [self showCaretTextBasedOn:result item:headerOut];
+        } else {
+            [self showImportList:selection];
         }
-        
-        [LAFImportListViewController sharedInstance].delegate = self;
-        [LAFImportListViewController presentInView:currentTextView items:items];
+    } else {
+        [self showImportList:nil];
     }
+}
+
+- (void)showImportList:(NSString *)searchString {
+    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+
+    NSMutableArray *items = [NSMutableArray array];
+    NSArray *projects = [self projectsInCurrentWorkspace];
+    for (LAFProjectHeaderCache *project in projects) {
+        [items addObjectsFromArray:[[project identifiers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+        [items addObjectsFromArray:[[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+    }
+    
+    [LAFImportListViewController sharedInstance].delegate = self;
+    [LAFImportListViewController presentInView:currentTextView items:items searchText:searchString];
 }
 
 - (void)displayAboveCaretText:(NSString *)text color:(NSColor *)color {
@@ -363,9 +373,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 - (BOOL)isImportString:(NSString *)string {
     NSRegularExpression *regex = [self importRegex];
-    NSInteger numberOfMatches = [regex numberOfMatchesInString:string
-                                                       options:0
-                                                         range:NSMakeRange(0, string.length)];
+    NSInteger numberOfMatches = [regex numberOfMatchesInString:string options:0 range:NSMakeRange(0, string.length)];
     return numberOfMatches > 0;
 }
 
