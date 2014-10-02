@@ -8,23 +8,14 @@
 
 #import "LAFProjectsInspector.h"
 #import "XCFXcodePrivate.h"
-#import "MHXcodeDocumentNavigator.h"
-#import "DVTSourceTextStorage+Operations.h"
 #import "NSTextView+Operations.h"
-#import "NSString+Extensions.h"
 #import "LAFProjectHeaderCache.h"
 #import "LAFImportListViewController.h"
-
-typedef enum {
-    LAFImportResultAlready,
-    LAFImportResultNotFound,
-    LAFImportResultDone,
-} LAFImportResult;
-
-NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include).*[\",<].*[\",>]";
+#import "LAFIDESourceCodeEditor.h"
 
 @interface LAFProjectsInspector () <LAFImportListViewControllerDelegate>
 @property (nonatomic, strong) NSMapTable *projectsByWorkspace;
+@property (nonatomic, strong) LAFIDESourceCodeEditor *editor;
 @property BOOL loading;
 @end
 
@@ -45,6 +36,8 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     if (self) {
         _projectsByWorkspace = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory
                                                 valueOptions:NSPointerFunctionsStrongMemory];
+        
+        _editor = [[LAFIDESourceCodeEditor alloc] init];
 
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         
@@ -141,17 +134,13 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 //    return workspacePath;
 }
 
-- (LAFImportResult)importHeader:(NSString *)header {
-    return [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
-}
-
 - (LAFImportResult)importIdentifier:(NSString *)identifier headerOut:(NSMutableString *)headerOut {
     for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
         NSString *header = [headers headerForIdentifier:identifier];
         if (header) {
             [headerOut appendString:header];
             
-            return [self importHeader:header];
+            return [_editor importHeader:header];
         }
     }
 
@@ -179,19 +168,17 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     }
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self displayAboveCaretText:text color:color];
+        [_editor showAboveCaret:text color:color];
     });
 }
 
 - (void)importAction:(NSNotification *)notif {
-    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
-    NSRange range = currentTextView.selectedRange;
+    NSString *selection = [_editor selectedText];
     if (_loading) {
         NSString *text = [NSString stringWithFormat:@"Indexing headers, please try later..."];
         NSColor *color = [NSColor colorWithRed:0.7 green:0.8 blue:1.0 alpha:1.0];
-        [self displayAboveCaretText:text color:color];
-    } else if (range.length > 0) {
-        NSString *selection = [[currentTextView string] substringWithRange:range];
+        [_editor showAboveCaret:text color:color];
+    } else if (selection.length > 0) {
         NSMutableString *headerOut = [NSMutableString string];
         LAFImportResult result = [self importIdentifier:selection headerOut:headerOut];
         if (result != LAFImportResultNotFound) {
@@ -205,8 +192,6 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 }
 
 - (void)showImportList:(NSString *)searchString {
-    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
-
     NSMutableArray *items = [NSMutableArray array];
     NSArray *projects = [self projectsInCurrentWorkspace];
     for (LAFProjectHeaderCache *project in projects) {
@@ -215,133 +200,20 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     }
     
     [LAFImportListViewController sharedInstance].delegate = self;
-    [LAFImportListViewController presentInView:currentTextView items:items searchText:searchString];
+    [LAFImportListViewController presentInView:[_editor view] items:items searchText:searchString];
 }
 
-- (void)displayAboveCaretText:(NSString *)text color:(NSColor *)color {
-    NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
-
-    NSRect keyRectOnTextView = [currentTextView mhFrameForCaret];
-    
-    NSTextField *field = [[NSTextField alloc] initWithFrame:CGRectMake(keyRectOnTextView.origin.x, keyRectOnTextView.origin.y, 0, 0)];
-    [field setBackgroundColor:color];
-    [field setFont:currentTextView.font];
-    [field setTextColor:[NSColor colorWithCalibratedWhite:0.2 alpha:1.0]];
-    [field setStringValue:text];
-    [field sizeToFit];
-    [field setBordered:NO];
-    [field setEditable:NO];
-    field.frame = CGRectOffset(field.frame, 0, - field.bounds.size.height - 3);
-    
-    [currentTextView addSubview:field];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setCompletionHandler:^{
-            [field removeFromSuperview];
-        }];
-        [[NSAnimationContext currentContext] setDuration:1.0];
-        [[field animator] setAlphaValue:0.0];
-        [NSAnimationContext endGrouping];
-    });
-}
-
-- (DVTSourceTextStorage *)currentTextStorage {
-    if (![[MHXcodeDocumentNavigator currentEditor] isKindOfClass:NSClassFromString(@"IDESourceCodeEditor")]) {
-        return nil;
-    }
-    NSTextView *textView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
-    return (DVTSourceTextStorage*)textView.textStorage;
-}
-
-- (LAFImportResult)addImport:(NSString *)statement {
-    DVTSourceTextStorage *textStorage = [self currentTextStorage];
-    BOOL duplicate = NO;
-    NSInteger lastLine = [self appropriateLine:textStorage statement:statement duplicate:&duplicate];
-    
-    if (lastLine != NSNotFound) {
-        NSString *importString = [NSString stringWithFormat:@"%@\n", statement];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [textStorage mhInsertString:importString
-                                 atLine:lastLine+1];
-        });
-    }
-    
-    if (duplicate) {
-        return LAFImportResultAlready;
-    } else {
-        return LAFImportResultDone;
-    }
-}
-
-- (NSUInteger)appropriateLine:(DVTSourceTextStorage *)source statement:(NSString *)statement duplicate:(BOOL *)duplicate {
-    __block NSUInteger lineNumber = NSNotFound;
-    __block NSUInteger currentLineNumber = 0;
-    __block BOOL foundDuplicate = NO;
-    [source.string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-        if ([self isImportString:line]) {
-            if ([line isEqual:statement]) {
-                foundDuplicate = YES;
-                *stop = YES;
-                return;
-            }
-            lineNumber = currentLineNumber;
-        }
-        currentLineNumber++;
-    }];
-    
-    if (foundDuplicate) {
-        *duplicate = YES;
-        return NSNotFound;
-    }
-    
-    //if no imports are present find the first new line.
-    if (lineNumber == NSNotFound) {
-        currentLineNumber = 0;
-        [source.string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-            if (![line mh_isWhitespaceOrNewline]) {
-                currentLineNumber++;
-            }
-            else {
-                lineNumber = currentLineNumber;
-                *stop = YES;
-            }
-        }];
-    }
-    
-    return lineNumber;
-}
-
-- (NSRegularExpression *)importRegex {
-    static NSRegularExpression *_regex = nil;
-    if (!_regex) {
-        NSError *error = nil;
-        _regex = [[NSRegularExpression alloc] initWithPattern:LAFAddImportOperationImportRegexPattern
-                                                      options:0
-                                                        error:&error];
-    }
-    return _regex;
-}
-
-- (BOOL)isImportString:(NSString *)string {
-    NSRegularExpression *regex = [self importRegex];
-    NSInteger numberOfMatches = [regex numberOfMatchesInString:string options:0 range:NSMakeRange(0, string.length)];
-    return numberOfMatches > 0;
-}
 
 #pragma mark - LAFImportListViewControllerDelegate
 
 - (void)itemSelected:(NSString *)item {
     LAFImportResult result = 0;
     if ([item hasSuffix:@".h"]) {
-        result = [self importHeader:item];
+        result = [_editor importHeader:item];
         [self showCaretTextBasedOn:result item:item];
     } else {
         // insert text
-        NSTextView *currentTextView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
-        NSRange range = currentTextView.selectedRange;
-        [currentTextView insertText:item replacementRange:range];
+        [_editor insertOnCaret:item];
 
         // notify
         NSMutableString *headerOut = [NSMutableString string];

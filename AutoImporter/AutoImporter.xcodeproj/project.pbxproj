@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		90A44E1F936B4B668EE81A3D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 254E2E54B2C942A493C01F55 /* libPods.a */; };
 		C4C9E477D59D4E429E792676 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 254E2E54B2C942A493C01F55 /* libPods.a */; };
+		E22C5B3919DDB27C00F11123 /* LAFIDESourceCodeEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */; };
+		E22C5B3A19DDB27C00F11123 /* LAFIDESourceCodeEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */; };
 		E2631D0D19DC85E900C3B141 /* LAFIDENotificationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */; };
 		E2631D0E19DC85E900C3B141 /* LAFIDENotificationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */; };
 		E264C7D319CC9BD700D8DAF7 /* LAFImportListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */; };
@@ -80,6 +82,8 @@
 		254E2E54B2C942A493C01F55 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F308B48C12848EEB802C9C3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		E22C5B3619DD842900F11123 /* LAFLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFLogger.h; sourceTree = "<group>"; };
+		E22C5B3719DDB27C00F11123 /* LAFIDESourceCodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIDESourceCodeEditor.h; sourceTree = "<group>"; };
+		E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDESourceCodeEditor.m; sourceTree = "<group>"; };
 		E2631D0B19DC85E900C3B141 /* LAFIDENotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIDENotificationHandler.h; sourceTree = "<group>"; };
 		E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDENotificationHandler.m; sourceTree = "<group>"; };
 		E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LAFImportListView.xib; sourceTree = "<group>"; };
@@ -219,6 +223,8 @@
 				E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */,
 				E2631D0B19DC85E900C3B141 /* LAFIDENotificationHandler.h */,
 				E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */,
+				E22C5B3719DDB27C00F11123 /* LAFIDESourceCodeEditor.h */,
+				E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */,
 				E26F40E419C0B95500527019 /* Supporting Files */,
 				E22C5B3619DD842900F11123 /* LAFLogger.h */,
 			);
@@ -497,6 +503,7 @@
 				E2AD810219C690AD008D33E1 /* LAFProjectHeaderCache.m in Sources */,
 				E2733B1C19C763BA00F55A20 /* LAFProjectsInspector.m in Sources */,
 				E26F412019C0C52300527019 /* NSObject+MHLogMethods.m in Sources */,
+				E22C5B3919DDB27C00F11123 /* LAFIDESourceCodeEditor.m in Sources */,
 				E26F412119C0C52300527019 /* NSString+Extensions.m in Sources */,
 				E26F413C19C0C56B00527019 /* XCWorkspace.m in Sources */,
 				E26F411D19C0C52300527019 /* NSArray+Operations.m in Sources */,
@@ -537,6 +544,7 @@
 				E2AD80F919C68DF8008D33E1 /* LAFProjectHeaderCacheTests.m in Sources */,
 				E2AD810A19C69561008D33E1 /* NSArray+Operations.m in Sources */,
 				E264C7DC19CC9DEC00D8DAF7 /* LAFImportListView.m in Sources */,
+				E22C5B3A19DDB27C00F11123 /* LAFIDESourceCodeEditor.m in Sources */,
 				E2AD810519C6954B008D33E1 /* XCProject+Extensions.m in Sources */,
 				E2AD810B19C69561008D33E1 /* NSFileManager+Headers.m in Sources */,
 				E2AD811219C69561008D33E1 /* NSView+Dumping.m in Sources */,
