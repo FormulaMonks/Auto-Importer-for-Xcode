@@ -6,7 +6,5 @@
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
-
-#define LAFLog(fmt,...) NSLog(@"Auto Importer: %@",[NSString stringWithFormat:(fmt), ##__VA_ARGS__]);
-
+    #import "LAFLogger.h"
 #endif

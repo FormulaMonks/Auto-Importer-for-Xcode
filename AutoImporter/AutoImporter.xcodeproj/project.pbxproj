@@ -79,6 +79,7 @@
 /* Begin PBXFileReference section */
 		254E2E54B2C942A493C01F55 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F308B48C12848EEB802C9C3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		E22C5B3619DD842900F11123 /* LAFLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFLogger.h; sourceTree = "<group>"; };
 		E2631D0B19DC85E900C3B141 /* LAFIDENotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIDENotificationHandler.h; sourceTree = "<group>"; };
 		E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDENotificationHandler.m; sourceTree = "<group>"; };
 		E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LAFImportListView.xib; sourceTree = "<group>"; };
@@ -219,6 +220,7 @@
 				E2631D0B19DC85E900C3B141 /* LAFIDENotificationHandler.h */,
 				E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */,
 				E26F40E419C0B95500527019 /* Supporting Files */,
+				E22C5B3619DD842900F11123 /* LAFLogger.h */,
 			);
 			path = AutoImporter;
 			sourceTree = "<group>";
