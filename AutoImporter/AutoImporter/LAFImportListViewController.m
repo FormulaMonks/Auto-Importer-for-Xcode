@@ -58,7 +58,7 @@
 
 - (void)showImportListViewInView:(NSView *)view frame:(NSRect)frame {
     if (!view) {
-        NSLog(@"Can't show identifiers import list since view is nil");
+        LAFLog(@"Can't show identifiers import list since view is nil");
         return;
     }
     

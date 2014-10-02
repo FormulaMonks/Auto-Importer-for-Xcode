@@ -138,7 +138,7 @@
                                           error:&error];
             
             if (error) {
-                NSLog(@"processing header path error: %@", error);
+                LAFLog(@"processing header path error: %@", error);
                 continue;
             }
             
@@ -179,7 +179,7 @@
     NSDate *methodFinish = [NSDate date];
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:start];
     
-    NSLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersByIdentifiers count], [[project filePath] lastPathComponent], executionTime);
+    LAFLog(@"%d Headers in project %@ - parse time: %f", (int)[_headersByIdentifiers count], [[project filePath] lastPathComponent], executionTime);
 }
 
 @end

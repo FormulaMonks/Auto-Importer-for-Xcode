@@ -64,7 +64,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 }
 
 -(void)notificationListener:(NSNotification *)notification {
-//    NSLog(@"  Notification: %@", [notification name]);
+//    LAFLog(@"  Notification: %@", [notification name]);
 }
 
 - (void)dealloc
@@ -84,7 +84,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     NSAssert([self currentWorkspace], @"workspace can't be nil");
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:projectPath]) {
-        NSLog(@"project path not found %@", projectPath);
+        LAFLog(@"project path not found %@", projectPath);
         return;
     }
     
@@ -97,7 +97,7 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
     }
     
     if (!projectCache) {
-        NSLog(@"creating project %@ for workspace %@", [projectPath lastPathComponent], [[self currentWorkspace] lastPathComponent]);
+        LAFLog(@"creating project %@ for workspace %@", [projectPath lastPathComponent], [[self currentWorkspace] lastPathComponent]);
         
         projectCache = [[LAFProjectHeaderCache alloc] initWithProjectPath:projectPath];
         [[self projectsInCurrentWorkspace] addObject:projectCache];
