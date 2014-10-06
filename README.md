@@ -7,7 +7,7 @@ Quickly import your headers on the fly while typing.
 - Allow to import a class/protocol by selecting some text.
 - Allow to pick from the list of all classes/protocols and headers in your project.
 
-![Menu](http://raw.githubusercontent.com/lucholaf/Auto-Importer-for-Xcode/master/demo.gif)
+![](demo.gif)
 
 ## Prerequisites
 
