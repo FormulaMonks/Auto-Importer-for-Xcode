@@ -2,6 +2,12 @@
 
 Quickly import your headers on the fly while typing.
 
+## MUST-FIX
+
+- fix conflict with peckham key
+- profile
+- tests!
+
 ## Features
 
 - Allow to import a class/protocol by selecting some text.
