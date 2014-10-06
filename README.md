@@ -2,12 +2,6 @@
 
 Quickly import your headers on the fly while typing.
 
-## MUST-FIX
-
-- fix conflict with peckham key
-- profile
-- tests!
-
 ## Features
 
 - Allow to import a class/protocol by selecting some text.
@@ -26,7 +20,7 @@ Clone and build the project, then restart Xcode.
 # User guide
 
 - ⌘ + ctrl + H after selecting some text (or you can have no selection at all)
-- If the selected text matches the name of a class/protocol it will import the header, otherwise it will show a list of filtered identifiers and headers.
+- If the selected text matches the name of a class/protocol it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers.
 - start typing the keyword of your import
 - use ↑ or ↓ keys to navigate
 - press ↵ or double click to add an import
@@ -37,7 +31,8 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 
 ## Known Issues
 
-- When two workspaces (and thus two windows) are open, there is no distinction between workspaces so all identifiers are shown on the listing.
+- When two workspaces (and thus two windows) are open, there is no distinction between workspaces and all identifiers are shown on the listing.
+- Avoid using 'InstallApplicationEventHandler' since it void other plugins to use it.
 
 ## Roadmap
 
@@ -46,4 +41,4 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 
 ## Misc
 
-Thanks to the Peckham project (https://github.com/markohlebar/Peckham.git) since I used some pieces from it to speed up.
+Thanks to the Peckham project (https://github.com/markohlebar/Peckham.git) since I used some pieces from it.
