@@ -1,0 +1,122 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		9666E4D5196BCB2B0076C1F2 /* Auto-Importer */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9666E4D8196BCB2B0076C1F2 /* Build configuration list for PBXAggregateTarget "Auto-Importer" */;
+			buildPhases = (
+				9666E4D9196BCB4E0076C1F2 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Auto-Importer";
+			productName = Auto-Importer;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXGroup section */
+		9666E4CE196BCAB40076C1F2 = {
+			isa = PBXGroup;
+			children = (
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		9666E4CF196BCAB40076C1F2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+			};
+			buildConfigurationList = 9666E4D2196BCAB40076C1F2 /* Build configuration list for PBXProject "Auto-Importer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9666E4CE196BCAB40076C1F2;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9666E4D5196BCB2B0076C1F2 /* Auto-Importer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9666E4D9196BCB4E0076C1F2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xcodebuild -workspace AutoImporter/AutoImporter.xcworkspace -scheme AutoImporter";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9666E4D3196BCAB40076C1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		9666E4D4196BCAB40076C1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		9666E4D6196BCB2B0076C1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9666E4D7196BCB2B0076C1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9666E4D2196BCAB40076C1F2 /* Build configuration list for PBXProject "Auto-Importer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9666E4D3196BCAB40076C1F2 /* Debug */,
+				9666E4D4196BCAB40076C1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9666E4D8196BCB2B0076C1F2 /* Build configuration list for PBXAggregateTarget "Auto-Importer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9666E4D6196BCB2B0076C1F2 /* Debug */,
+				9666E4D7196BCB2B0076C1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9666E4CF196BCAB40076C1F2 /* Project object */;
+}
