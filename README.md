@@ -17,7 +17,7 @@ Quickly import your headers on the fly while typing.
 
 Clone and build the project, then restart Xcode.
 
-# User guide
+## Usage
 
 - ⌘ + ctrl + H after selecting some text (or you can have no selection at all)
 - If the selected text matches the name of a class/protocol it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers.
