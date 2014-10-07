@@ -15,7 +15,13 @@ Quickly import your headers on the fly while typing.
 
 ## Install
 
+### Manual
+
 Clone and build the project, then restart Xcode.
+
+### Alcatraz
+
+- install [Alcatraz](https://github.com/supermarin/Alcatraz) and search for **Auto-Importer** 
 
 ## Usage
 
@@ -41,4 +47,4 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 
 ## Misc
 
-Thanks to the Peckham project (https://github.com/markohlebar/Peckham.git) since I used some pieces from it.
+Thanks to the [Peckham](https://github.com/markohlebar/Peckham.git) project since I used some pieces from it.
