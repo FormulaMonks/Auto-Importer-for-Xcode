@@ -15,11 +15,11 @@ Quickly import your headers on the fly while typing.
 
 ## Install
 
-### Manual
+#### Manual
 
 Clone and build the project, then restart Xcode.
 
-### Alcatraz
+#### Alcatraz
 
 - install [Alcatraz](https://github.com/supermarin/Alcatraz) and search for **Auto-Importer** 
 
