@@ -16,7 +16,7 @@
 			dependencies = (
 			);
 			name = "Auto-Importer";
-			productName = Auto-Importer;
+			productName = "Auto-Importer";
 		};
 /* End PBXAggregateTarget section */
 
@@ -63,7 +63,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "xcodebuild -workspace AutoImporter/AutoImporter.xcworkspace -scheme AutoImporter";
+			shellScript = "xcodebuild -workspace AutoImporter/Auto-Importer.xcworkspace -scheme Auto-Importer";
 		};
 /* End PBXShellScriptBuildPhase section */
 

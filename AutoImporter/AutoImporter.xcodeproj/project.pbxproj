@@ -339,9 +339,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E26F40DB19C0B95500527019 /* AutoImporter */ = {
+		E26F40DB19C0B95500527019 /* Auto-Importer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E26F40EF19C0B95500527019 /* Build configuration list for PBXNativeTarget "AutoImporter" */;
+			buildConfigurationList = E26F40EF19C0B95500527019 /* Build configuration list for PBXNativeTarget "Auto-Importer" */;
 			buildPhases = (
 				63FB692D67944E09B153F967 /* Check Pods Manifest.lock */,
 				E26F40D819C0B95500527019 /* Sources */,
@@ -353,14 +353,14 @@
 			);
 			dependencies = (
 			);
-			name = AutoImporter;
+			name = "Auto-Importer";
 			productName = AutoImporter;
 			productReference = E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
-		E2AD80EE19C68DF8008D33E1 /* AutoImporterTests */ = {
+		E2AD80EE19C68DF8008D33E1 /* Auto-ImporterTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E2AD80FF19C68DF8008D33E1 /* Build configuration list for PBXNativeTarget "AutoImporterTests" */;
+			buildConfigurationList = E2AD80FF19C68DF8008D33E1 /* Build configuration list for PBXNativeTarget "Auto-ImporterTests" */;
 			buildPhases = (
 				6E3A5B48AFA84A9CB2031C34 /* Check Pods Manifest.lock */,
 				E2AD80EB19C68DF8008D33E1 /* Sources */,
@@ -373,7 +373,7 @@
 			dependencies = (
 				E2AD80FC19C68DF8008D33E1 /* PBXTargetDependency */,
 			);
-			name = AutoImporterTests;
+			name = "Auto-ImporterTests";
 			productName = AutoImporterTests;
 			productReference = E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -405,8 +405,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E26F40DB19C0B95500527019 /* AutoImporter */,
-				E2AD80EE19C68DF8008D33E1 /* AutoImporterTests */,
+				E26F40DB19C0B95500527019 /* Auto-Importer */,
+				E2AD80EE19C68DF8008D33E1 /* Auto-ImporterTests */,
 			);
 		};
 /* End PBXProject section */
@@ -565,7 +565,7 @@
 /* Begin PBXTargetDependency section */
 		E2AD80FC19C68DF8008D33E1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E26F40DB19C0B95500527019 /* AutoImporter */;
+			target = E26F40DB19C0B95500527019 /* Auto-Importer */;
 			targetProxy = E2AD80FB19C68DF8008D33E1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -750,7 +750,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E26F40EF19C0B95500527019 /* Build configuration list for PBXNativeTarget "AutoImporter" */ = {
+		E26F40EF19C0B95500527019 /* Build configuration list for PBXNativeTarget "Auto-Importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E26F40F019C0B95500527019 /* Debug */,
@@ -759,7 +759,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E2AD80FF19C68DF8008D33E1 /* Build configuration list for PBXNativeTarget "AutoImporterTests" */ = {
+		E2AD80FF19C68DF8008D33E1 /* Build configuration list for PBXNativeTarget "Auto-ImporterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E2AD80FD19C68DF8008D33E1 /* Debug */,
