@@ -65,7 +65,7 @@
     NSString *filePath = [self filePathForProjectFromNotification:notification];
     
     if (filePath) {
-        [[LAFProjectsInspector sharedInspector] updateProject:filePath];
+        [[LAFProjectsInspector sharedInspector] updateProject:filePath doneBlock:nil];
     }
 }
 

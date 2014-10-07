@@ -65,19 +65,27 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)updateHeader:(NSString *)headerPath {
+- (BOOL)updateHeader:(NSString *)headerPath {
     for (LAFProjectHeaderCache *headers in [self projectsInCurrentWorkspace]) {
         if ([headers containsHeader:headerPath]) {
             [headers refreshHeader:headerPath];
+            return YES;
         }
     }
+    
+    return NO;
 }
 
-- (void)updateProject:(NSString *)projectPath {
+- (void)updateProject:(NSString *)projectPath doneBlock:(dispatch_block_t)doneBlock {
     NSAssert([self currentWorkspace], @"workspace can't be nil");
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:projectPath]) {
         LAFLog(@"project path not found %@", projectPath);
+        
+        if (doneBlock) {
+            doneBlock();
+        }
+
         return;
     }
     
@@ -99,6 +107,10 @@
     _loading = YES;
     [projectCache refresh:^{
         _loading = NO;
+        
+        if (doneBlock) {
+            doneBlock();
+        }
     }];
 }
 
