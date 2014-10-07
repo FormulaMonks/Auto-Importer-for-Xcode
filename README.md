@@ -17,7 +17,7 @@ Quickly import your headers on the fly while typing.
 
 #### Alcatraz
 
-- install [Alcatraz](https://github.com/supermarin/Alcatraz) and search for **Auto-Importer** 
+- Install [Alcatraz](https://github.com/supermarin/Alcatraz) and search for **Auto-Importer** 
 
 #### Manual
 
