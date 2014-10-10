@@ -10,9 +10,20 @@
 
 @interface NSColor (MyColor)
 
-- (NSColor *)laf_redColor;
-- (NSColor *)laf_greenColor;
+- (NSColor *) laf_redColor;
+
+- (NSColor *)laf_greenColor ;
+
+// a line comment
 - (NSColor *)laf_filterColor:(NSColor *)color;
-- (NSColor *)laf_filterColor:(NSColor *)color offset:(CGFloat)offset;
+
+/*
+ * multiline comment
+ */
+- (NSColor *)laf_filterColor :(NSColor *)color offset:(CGFloat)offset;
+
+- (NSColor *)laf_filterColor2: (NSColor *)color offset:(CGFloat)offset;
+
+- (NSColor *)laf_filterColor3:(NSColor *) color offset:(CGFloat)offset;
 
 @end

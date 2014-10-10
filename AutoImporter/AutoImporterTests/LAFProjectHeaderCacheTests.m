@@ -51,10 +51,12 @@
     
     LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
     [headers refresh:^{
-        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_redColor;"], @"NSColor+MyColor.h");
-        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_greenColor;"], @"NSColor+MyColor.h");
-        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_filterColor:(NSColor *)color;"], @"NSColor+MyColor.h");
-        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_filterColor:(NSColor *)color offset:(CGFloat)offset;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_redColor;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_greenColor;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_filterColor:"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_filterColor:offset:"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_filterColor2:offset:"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"laf_filterColor3:offset:"], @"NSColor+MyColor.h");
         
         dispatch_group_leave(self.requestGroup);
     }];

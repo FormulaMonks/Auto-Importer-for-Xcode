@@ -194,14 +194,48 @@
     NSArray *methods = [matchMethods componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSMutableArray *elements = [NSMutableArray array];
     for (NSString *method in methods) {
-        LAFIdentifier *element = [LAFIdentifier new];
-        element.name = method;
-        element.customTypeString = matchClass;
-        element.type = LAFIdentifierTypeCategory;
-        [elements addObject:element];
+        NSString *signature = [self extractSignature:method];
+        if (signature) {
+            LAFIdentifier *element = [LAFIdentifier new];
+            element.name = [self extractSignature:method];
+            element.customTypeString = matchClass;
+            element.type = LAFIdentifierTypeCategory;
+            [elements addObject:element];
+        }
     }
     
     return elements;
+}
+
+- (NSString *)extractSignature:(NSString *)method {
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:@"([a-z][a-z0-9_]+\\s*[:;])"
+                                  options:NSRegularExpressionCaseInsensitive|NSRegularExpressionAllowCommentsAndWhitespace
+                                  error:&error];
+    
+    if (error) {
+        LAFLog(@"processing header path error: %@", error);
+        return nil;
+    }
+    
+    NSMutableString *signature = [NSMutableString string];
+    [regex enumerateMatchesInString:method options:0 range:NSMakeRange(0, [method length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+        NSRange matchRange = [match rangeAtIndex:1];
+        NSString *matchString = [method substringWithRange:matchRange];
+        NSString *matchPart = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *partWithoutSpaces = [matchPart stringByReplacingOccurrencesOfString:@" " withString:@""];
+        if ([partWithoutSpaces hasSuffix:@";"] && [signature length] > 0) {
+            return; // it's not the first part so it already has a name
+        }
+        
+        [signature appendString:partWithoutSpaces];
+    }];
+    
+    if ([signature length] > 0)
+        return signature;
+    else
+        return nil;
 }
 
 - (void)updateProject:(XCProject *)project {
@@ -276,7 +310,7 @@
             return @"H";
             break;
         case LAFIdentifierTypeCategory:
-            return _customTypeString;
+            return [_customTypeString stringByAppendingString:@"()"];
             break;
     }
 }
