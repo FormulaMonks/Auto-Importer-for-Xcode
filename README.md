@@ -31,7 +31,7 @@ Quickly import your headers on the fly while typing.
 - use ↑ or ↓ keys to navigate
 - press ↵ or double click to add an import
 
-- NOTE: on the list, classes are shown as [C], protocols as [P] and categories as [ClassExtended()]
+NOTE: on the list, classes are shown as [C], protocols as [P] and categories as [ClassExtended()]
 
 ## Uninstall
 
