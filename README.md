@@ -4,8 +4,8 @@ Quickly import your headers on the fly while typing.
 
 ## Features
 
-- Allows to import a class/protocol by selecting some text.
-- Allows to pick from the list of all classes/protocols and headers in your project.
+- Allows to import a class/protocol/category by selecting some text.
+- Allows to pick from the list of all classes/protocols/categories and headers in your project.
 
 ![](demo.gif)
 
@@ -26,10 +26,12 @@ Quickly import your headers on the fly while typing.
 ## Usage
 
 - ⌘ + ctrl + H after selecting some text (or you can have no selection at all)
-- If the selected text matches the name of a class/protocol it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers.
+- If the selected text matches the name of a class/protocol or category method it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers.
 - start typing the keyword of your import
 - use ↑ or ↓ keys to navigate
 - press ↵ or double click to add an import
+
+- NOTE: on the list, classes are shown as [C], protocols as [P] and categories as [ClassExtended()]
 
 ## Uninstall
 
@@ -43,7 +45,6 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 ## Roadmap
 
 - Read framework headers.
-- Index categories and their methods.
 
 ## Misc
 
