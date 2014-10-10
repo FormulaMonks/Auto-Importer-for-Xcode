@@ -127,14 +127,15 @@
         
         NSDictionary *pattern1 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFIdentifierTypeClass"};
         NSDictionary *pattern2 = @{kPatternRegExp: @"(?:@protocol)\\s+([a-z][a-z0-9_\\s*\()]+)", kPatternType:@"LAFIdentifierTypeProtocol"};
-        NSArray *patterns = @[pattern1, pattern2];
-        
+        NSDictionary *pattern3 = @{kPatternRegExp: @"(?:@interface)\\s+([a-z][a-z0-9_\\s*]+)\\(.+\\)$(.+)^@end", kPatternType:@"LAFIdentifierTypeCategory"};
+        NSArray *patterns = @[pattern1, pattern2, pattern3];
+
         for (NSDictionary *pattern in patterns) {
             NSError *error = nil;
             NSString *classRegExp = pattern[kPatternRegExp];
             NSRegularExpression *regex = [NSRegularExpression
                                           regularExpressionWithPattern:classRegExp
-                                          options:NSRegularExpressionCaseInsensitive
+                                          options:NSRegularExpressionCaseInsensitive|NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionAnchorsMatchLines
                                           error:&error];
             
             if (error) {
@@ -143,21 +144,98 @@
             }
             
             [regex enumerateMatchesInString:content options:0 range:NSMakeRange(0, [content length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-                NSRange matchRange = [match rangeAtIndex:1];
-                NSString *matchString = [content substringWithRange:matchRange];
-                NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
-                    LAFIdentifier *element = [LAFIdentifier new];
-                    element.name = matchTrim;
-                    element.type = [element typeFromString:pattern[kPatternType]];
-                    [_headersByIdentifiers setObject:[headerPath lastPathComponent] forKey:element];
-                    [identifiers addObject:element];
+                if ([LAFIdentifier typeFromString:pattern[kPatternType]] == LAFIdentifierTypeCategory) {
+                    NSArray *elements = [self createCategoryElements:match from:content];
+                    for (LAFIdentifier *element in elements) {
+                        [_headersByIdentifiers setObject:[headerPath lastPathComponent] forKey:element];
+                        [identifiers addObject:element];
+                    }
+                } else {
+                    LAFIdentifier *element = [self createClassElement:match from:content];
+                    if (element) {
+                        element.type = [LAFIdentifier typeFromString:pattern[kPatternType]];
+                        [_headersByIdentifiers setObject:[headerPath lastPathComponent] forKey:element];
+                        [identifiers addObject:element];
+                    }
                 }
             }];
         }
         
         return YES;
     }
+}
+
+- (LAFIdentifier *)createClassElement:(NSTextCheckingResult *)match from:(NSString *)content {
+    NSRange matchRange = [match rangeAtIndex:1];
+    NSString *matchString = [content substringWithRange:matchRange];
+    NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([matchTrim rangeOfString:@"("].location == NSNotFound) { // we're not adding categories
+        NSRange matchRange = [match rangeAtIndex:1];
+        NSString *matchString = [content substringWithRange:matchRange];
+        NSString *matchTrim = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        LAFIdentifier *element = [LAFIdentifier new];
+        element.name = matchTrim;
+        
+        return element;
+    }
+    
+    return nil;
+}
+
+- (NSArray *)createCategoryElements:(NSTextCheckingResult *)match from:(NSString *)content {
+    NSRange matchRange = [match rangeAtIndex:1];
+    NSString *matchString = [content substringWithRange:matchRange];
+    NSString *matchClass = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    matchRange = [match rangeAtIndex:2];
+    matchString = [content substringWithRange:matchRange];
+    NSString *matchMethods = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSArray *methods = [matchMethods componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSMutableArray *elements = [NSMutableArray array];
+    for (NSString *method in methods) {
+        NSString *signature = [self extractSignature:method];
+        if (signature) {
+            LAFIdentifier *element = [LAFIdentifier new];
+            element.name = [self extractSignature:method];
+            element.customTypeString = matchClass;
+            element.type = LAFIdentifierTypeCategory;
+            [elements addObject:element];
+        }
+    }
+    
+    return elements;
+}
+
+- (NSString *)extractSignature:(NSString *)method {
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:@"([a-z][a-z0-9_]+\\s*[:;])"
+                                  options:NSRegularExpressionCaseInsensitive|NSRegularExpressionAllowCommentsAndWhitespace
+                                  error:&error];
+    
+    if (error) {
+        LAFLog(@"processing header path error: %@", error);
+        return nil;
+    }
+    
+    NSMutableString *signature = [NSMutableString string];
+    [regex enumerateMatchesInString:method options:0 range:NSMakeRange(0, [method length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+        NSRange matchRange = [match rangeAtIndex:1];
+        NSString *matchString = [method substringWithRange:matchRange];
+        NSString *matchPart = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *partWithoutSpaces = [matchPart stringByReplacingOccurrencesOfString:@" " withString:@""];
+        if ([partWithoutSpaces hasSuffix:@";"] && [signature length] > 0) {
+            return; // it's not the first part so it already has a name
+        }
+        
+        [signature appendString:partWithoutSpaces];
+    }];
+    
+    if ([signature length] > 0)
+        return signature;
+    else
+        return nil;
 }
 
 - (void)updateProject:(XCProject *)project {
@@ -206,9 +284,11 @@
     return [self.name isEqualToString:[object name]];
 }
 
-- (LAFIdentifierType)typeFromString:(NSString *)string {
++ (LAFIdentifierType)typeFromString:(NSString *)string {
     if ([string isEqualToString:@"LAFIdentifierTypeClass"]) {
         return LAFIdentifierTypeClass;
+    } else if ([string isEqualToString:@"LAFIdentifierTypeCategory"]) {
+        return LAFIdentifierTypeCategory;
     } else if ([string isEqualToString:@"LAFIdentifierTypeProtocol"]) {
         return LAFIdentifierTypeProtocol;
     } else if ([string isEqualToString:@"LAFIdentifierTypeHeader"]) {
@@ -228,6 +308,9 @@
             break;
         case LAFIdentifierTypeHeader:
             return @"H";
+            break;
+        case LAFIdentifierTypeCategory:
+            return [_customTypeString stringByAppendingString:@"()"];
             break;
     }
 }

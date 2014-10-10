@@ -122,7 +122,7 @@
     if ([[view.searchField stringValue] length] == 0) {
         _filtered = _items;
     } else {
-        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.name CONTAINS[cd] %@", [view.searchField stringValue]]];
+        _filtered = [_items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.description CONTAINS[cd] %@", [view.searchField stringValue]]];
     }
     
     [view.tableView reloadData];
