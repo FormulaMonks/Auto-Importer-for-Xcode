@@ -14,4 +14,16 @@
     return [NSColor redColor];
 }
 
+- (NSColor *)laf_greenColor {
+    return [NSColor greenColor];
+}
+
+- (NSColor *)laf_filterColor:(NSColor *)color {
+    return color;
+}
+
+- (NSColor *)laf_filterColor:(NSColor *)color offset:(CGFloat)offset {
+    return color;
+}
+
 @end

@@ -11,5 +11,8 @@
 @interface NSColor (MyColor)
 
 - (NSColor *)laf_redColor;
+- (NSColor *)laf_greenColor;
+- (NSColor *)laf_filterColor:(NSColor *)color;
+- (NSColor *)laf_filterColor:(NSColor *)color offset:(CGFloat)offset;
 
 @end

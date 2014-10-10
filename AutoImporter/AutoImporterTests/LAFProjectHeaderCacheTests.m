@@ -46,6 +46,20 @@
     }];
 }
 
+- (void)testCategoryMethodsAreImported {
+    dispatch_group_enter(self.requestGroup);
+    
+    LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];
+    [headers refresh:^{
+        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_redColor;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_greenColor;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_filterColor:(NSColor *)color;"], @"NSColor+MyColor.h");
+        XCTAssertEqualObjects([headers headerForIdentifier:@"- (NSColor *)laf_filterColor:(NSColor *)color offset:(CGFloat)offset;"], @"NSColor+MyColor.h");
+        
+        dispatch_group_leave(self.requestGroup);
+    }];
+}
+
 - (void)testGroupClassIsImported
 {
     dispatch_group_enter(self.requestGroup);
