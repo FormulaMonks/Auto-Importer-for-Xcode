@@ -44,7 +44,7 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 
 ## Roadmap
 
-- Read framework headers.
+- Read headers from frameworks.
 
 ## Misc
 
