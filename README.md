@@ -4,8 +4,8 @@ Quickly import your headers on the fly while typing.
 
 ## Features
 
-- Allows to import a class/protocol/category by selecting some text.
-- Allows to pick from the list of all classes/protocols/categories and headers in your project.
+- Allows to import a class/protocol/category header by selecting some text matching its name.
+- Allows to import from a list of all classes/protocols/categories and headers in your project.
 
 ![](demo.gif)
 
