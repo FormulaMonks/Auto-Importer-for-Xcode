@@ -26,12 +26,12 @@ Quickly import your headers on the fly while typing.
 ## Usage
 
 - ⌘ + ctrl + H after selecting some text (or you can have no selection at all)
-- If the selected text matches the name of a class/protocol or category method it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers.
+- If the selected text matches the name of a class/protocol or category method, it will import the header and you're done, otherwise it will show a list of filtered identifiers and headers...
 - start typing the keyword of your import
 - use ↑ or ↓ keys to navigate
 - press ↵ or double click to add an import
 
-NOTE: on the list, classes are shown as [C], protocols as [P] and categories as [ClassExtended()]
+NOTE: on the list, classes are shown as [C], protocols as [P] and category methods as [ClassExtended()]
 
 ## Uninstall
 
@@ -40,7 +40,7 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 ## Known Issues
 
 - When two workspaces (and thus two windows) are open, there is no distinction between workspaces and all identifiers are shown on the listing.
-- Avoid using 'InstallApplicationEventHandler' since it void other plugins to use it.
+- Avoid using 'InstallApplicationEventHandler' since it prevent other plugins to use it.
 
 ## Roadmap
 
