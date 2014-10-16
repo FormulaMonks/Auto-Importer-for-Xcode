@@ -30,20 +30,6 @@
     return [self.name isEqualToString:[object name]];
 }
 
-+ (LAFIdentifierType)typeFromString:(NSString *)string {
-    if ([string isEqualToString:@"LAFIdentifierTypeClass"]) {
-        return LAFIdentifierTypeClass;
-    } else if ([string isEqualToString:@"LAFIdentifierTypeCategory"]) {
-        return LAFIdentifierTypeCategory;
-    } else if ([string isEqualToString:@"LAFIdentifierTypeProtocol"]) {
-        return LAFIdentifierTypeProtocol;
-    } else if ([string isEqualToString:@"LAFIdentifierTypeHeader"]) {
-        return LAFIdentifierTypeHeader;
-    } else {
-        return LAFIdentifierTypeClass;
-    }
-}
-
 - (NSString *)typeString {
     switch (_type) {
         case LAFIdentifierTypeClass:

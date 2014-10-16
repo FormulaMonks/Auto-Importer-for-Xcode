@@ -21,6 +21,5 @@ typedef NS_ENUM(NSInteger, LAFIdentifierType) {
 @property (nonatomic, strong) NSString *name;
 
 - (instancetype)initWithName:(NSString *)name;
-+ (LAFIdentifierType)typeFromString:(NSString *)string;
 
 @end
