@@ -10,6 +10,7 @@
 #import "LAFImportListView.h"
 #import "NSTextView+Operations.h"
 #import "LAFProjectHeaderCache.h"
+#import "LAFIdentifier.h"
 
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;

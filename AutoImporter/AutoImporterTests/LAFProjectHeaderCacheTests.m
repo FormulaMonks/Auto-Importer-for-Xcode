@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "LAFProjectHeaderCache.h"
 #import "LAFTestCase.h"
+#import "LAFIdentifier.h"
 
 @interface LAFProjectHeaderCacheTests : LAFTestCase
 @property (nonatomic, strong) NSString *projectPath;
@@ -29,8 +30,7 @@
     [super tearDown];
 }
 
-- (void)testClassesAreImported
-{
+- (void)testClassesAreImported {
     dispatch_group_enter(self.requestGroup);
 
     LAFProjectHeaderCache *headers = [[LAFProjectHeaderCache alloc] initWithProjectPath:_projectPath];

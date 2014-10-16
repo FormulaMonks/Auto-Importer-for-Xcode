@@ -65,6 +65,16 @@
 		E2AD811219C69561008D33E1 /* NSView+Dumping.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F411219C0C52300527019 /* NSView+Dumping.m */; };
 		E2AD811319C69561008D33E1 /* XCSourceFile+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */; };
 		E2AD811419C6958E008D33E1 /* MHXcodeDocumentNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = E26F40F519C0C4DE00527019 /* MHXcodeDocumentNavigator.m */; };
+		E2D78B1119EFF030009C21B7 /* LAFElementProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1019EFF030009C21B7 /* LAFElementProcessor.m */; };
+		E2D78B1219EFF030009C21B7 /* LAFElementProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1019EFF030009C21B7 /* LAFElementProcessor.m */; };
+		E2D78B1519EFF046009C21B7 /* LAFClassProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1419EFF046009C21B7 /* LAFClassProcessor.m */; };
+		E2D78B1619EFF046009C21B7 /* LAFClassProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1419EFF046009C21B7 /* LAFClassProcessor.m */; };
+		E2D78B1919EFF052009C21B7 /* LAFCategoryProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1819EFF052009C21B7 /* LAFCategoryProcessor.m */; };
+		E2D78B1A19EFF052009C21B7 /* LAFCategoryProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1819EFF052009C21B7 /* LAFCategoryProcessor.m */; };
+		E2D78B1D19EFF0AC009C21B7 /* LAFProtocolProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1C19EFF0AC009C21B7 /* LAFProtocolProcessor.m */; };
+		E2D78B1E19EFF0AC009C21B7 /* LAFProtocolProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B1C19EFF0AC009C21B7 /* LAFProtocolProcessor.m */; };
+		E2D78B2119EFF4B9009C21B7 /* LAFIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B2019EFF4B9009C21B7 /* LAFIdentifier.m */; };
+		E2D78B2219EFF4B9009C21B7 /* LAFIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D78B2019EFF4B9009C21B7 /* LAFIdentifier.m */; };
 		E2F5DFF919C1EBBA00666067 /* XCSourceFile+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */; };
 /* End PBXBuildFile section */
 
@@ -91,7 +101,7 @@
 		E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListViewController.m; sourceTree = "<group>"; };
 		E264C7D919CC9DEC00D8DAF7 /* LAFImportListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFImportListView.h; sourceTree = "<group>"; };
 		E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListView.m; sourceTree = "<group>"; };
-		E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoImporter.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = AutoImporter.xcplugin; path = "Auto-Importer.xcplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E26F40DF19C0B95500527019 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E26F40E119C0B95500527019 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E26F40E519C0B95500527019 /* AutoImporter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AutoImporter-Info.plist"; sourceTree = "<group>"; };
@@ -137,7 +147,7 @@
 		E29ED2A919C9FA65002EF155 /* LAFProjectsInspectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectsInspectorTests.m; sourceTree = "<group>"; };
 		E29ED2AB19C9FA91002EF155 /* LAFTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFTestCase.h; sourceTree = "<group>"; };
 		E29ED2AC19C9FA91002EF155 /* LAFTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFTestCase.m; sourceTree = "<group>"; };
-		E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoImporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = AutoImporterTests.xctest; path = "Auto-ImporterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2AD80F019C68DF8008D33E1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E2AD80F419C68DF8008D33E1 /* AutoImporterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AutoImporterTests-Info.plist"; sourceTree = "<group>"; };
 		E2AD80F619C68DF8008D33E1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -146,6 +156,16 @@
 		E2AD810019C690AD008D33E1 /* LAFProjectHeaderCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFProjectHeaderCache.h; sourceTree = "<group>"; };
 		E2AD810119C690AD008D33E1 /* LAFProjectHeaderCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectHeaderCache.m; sourceTree = "<group>"; };
 		E2AD811619C695B5008D33E1 /* libPods-XcodeEditor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-XcodeEditor.a"; path = "../../../Library/Developer/Xcode/DerivedData/AutoImporter-cceunrmpqmnhdigbhxyrqyfmkjee/Build/Products/Debug/libPods-XcodeEditor.a"; sourceTree = "<group>"; };
+		E2D78B0F19EFF030009C21B7 /* LAFElementProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFElementProcessor.h; sourceTree = "<group>"; };
+		E2D78B1019EFF030009C21B7 /* LAFElementProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFElementProcessor.m; sourceTree = "<group>"; };
+		E2D78B1319EFF046009C21B7 /* LAFClassProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFClassProcessor.h; sourceTree = "<group>"; };
+		E2D78B1419EFF046009C21B7 /* LAFClassProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFClassProcessor.m; sourceTree = "<group>"; };
+		E2D78B1719EFF052009C21B7 /* LAFCategoryProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFCategoryProcessor.h; sourceTree = "<group>"; };
+		E2D78B1819EFF052009C21B7 /* LAFCategoryProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFCategoryProcessor.m; sourceTree = "<group>"; };
+		E2D78B1B19EFF0AC009C21B7 /* LAFProtocolProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFProtocolProcessor.h; sourceTree = "<group>"; };
+		E2D78B1C19EFF0AC009C21B7 /* LAFProtocolProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProtocolProcessor.m; sourceTree = "<group>"; };
+		E2D78B1F19EFF4B9009C21B7 /* LAFIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIdentifier.h; sourceTree = "<group>"; };
+		E2D78B2019EFF4B9009C21B7 /* LAFIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIdentifier.m; sourceTree = "<group>"; };
 		E2F5DFF719C1EBBA00666067 /* XCSourceFile+Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCSourceFile+Path.h"; sourceTree = "<group>"; };
 		E2F5DFF819C1EBBA00666067 /* XCSourceFile+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCSourceFile+Path.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,6 +228,7 @@
 		E26F40E319C0B95500527019 /* AutoImporter */ = {
 			isa = PBXGroup;
 			children = (
+				E2D78B0E19EFF005009C21B7 /* Processors */,
 				E26F40F819C0C52300527019 /* Categories */,
 				E26F40F219C0C4DE00527019 /* External */,
 				E26F40E919C0B95500527019 /* LAFAutoImporter.h */,
@@ -225,8 +246,10 @@
 				E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */,
 				E22C5B3719DDB27C00F11123 /* LAFIDESourceCodeEditor.h */,
 				E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */,
-				E26F40E419C0B95500527019 /* Supporting Files */,
 				E22C5B3619DD842900F11123 /* LAFLogger.h */,
+				E2D78B1F19EFF4B9009C21B7 /* LAFIdentifier.h */,
+				E2D78B2019EFF4B9009C21B7 /* LAFIdentifier.m */,
+				E26F40E419C0B95500527019 /* Supporting Files */,
 			);
 			path = AutoImporter;
 			sourceTree = "<group>";
@@ -334,6 +357,21 @@
 				E2AD80FA19C68DF8008D33E1 /* AutoImporterTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E2D78B0E19EFF005009C21B7 /* Processors */ = {
+			isa = PBXGroup;
+			children = (
+				E2D78B0F19EFF030009C21B7 /* LAFElementProcessor.h */,
+				E2D78B1019EFF030009C21B7 /* LAFElementProcessor.m */,
+				E2D78B1319EFF046009C21B7 /* LAFClassProcessor.h */,
+				E2D78B1419EFF046009C21B7 /* LAFClassProcessor.m */,
+				E2D78B1719EFF052009C21B7 /* LAFCategoryProcessor.h */,
+				E2D78B1819EFF052009C21B7 /* LAFCategoryProcessor.m */,
+				E2D78B1B19EFF0AC009C21B7 /* LAFProtocolProcessor.h */,
+				E2D78B1C19EFF0AC009C21B7 /* LAFProtocolProcessor.m */,
+			);
+			name = Processors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -504,12 +542,15 @@
 				E2733B1C19C763BA00F55A20 /* LAFProjectsInspector.m in Sources */,
 				E26F412019C0C52300527019 /* NSObject+MHLogMethods.m in Sources */,
 				E22C5B3919DDB27C00F11123 /* LAFIDESourceCodeEditor.m in Sources */,
+				E2D78B1919EFF052009C21B7 /* LAFCategoryProcessor.m in Sources */,
 				E26F412119C0C52300527019 /* NSString+Extensions.m in Sources */,
 				E26F413C19C0C56B00527019 /* XCWorkspace.m in Sources */,
 				E26F411D19C0C52300527019 /* NSArray+Operations.m in Sources */,
 				E26F413819C0C56B00527019 /* XCProject+Extensions.m in Sources */,
+				E2D78B1119EFF030009C21B7 /* LAFElementProcessor.m in Sources */,
 				E26F412419C0C52300527019 /* NSTextView+Operations.m in Sources */,
 				E26F411F19C0C52300527019 /* NSMutableIndexSet+NSArray.m in Sources */,
+				E2D78B2119EFF4B9009C21B7 /* LAFIdentifier.m in Sources */,
 				E26F40EB19C0B95500527019 /* LAFAutoImporter.m in Sources */,
 				E26F413A19C0C56B00527019 /* XCTarget+XCProject.m in Sources */,
 				E26F411919C0C52300527019 /* DVTSourceTextStorage+Operations.m in Sources */,
@@ -522,7 +563,9 @@
 				E26F40F719C0C4DE00527019 /* MHXcodeDocumentNavigator.m in Sources */,
 				E26F412519C0C52300527019 /* NSView+Dumping.m in Sources */,
 				E26F413719C0C56B00527019 /* NSString+XCAdditions.m in Sources */,
+				E2D78B1519EFF046009C21B7 /* LAFClassProcessor.m in Sources */,
 				E26F412319C0C52300527019 /* NSString+MHNSRange.m in Sources */,
+				E2D78B1D19EFF0AC009C21B7 /* LAFProtocolProcessor.m in Sources */,
 				E264C7D719CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -534,6 +577,7 @@
 				E2AD810C19C69561008D33E1 /* NSMutableIndexSet+NSArray.m in Sources */,
 				E2733B1D19C763BA00F55A20 /* LAFProjectsInspector.m in Sources */,
 				E2AD810419C69549008D33E1 /* NSString+XCAdditions.m in Sources */,
+				E2D78B1219EFF030009C21B7 /* LAFElementProcessor.m in Sources */,
 				E2AD811119C69561008D33E1 /* NSTextView+Operations.m in Sources */,
 				E2631D0E19DC85E900C3B141 /* LAFIDENotificationHandler.m in Sources */,
 				E2AD810E19C69561008D33E1 /* NSString+Extensions.m in Sources */,
@@ -550,13 +594,17 @@
 				E2AD811219C69561008D33E1 /* NSView+Dumping.m in Sources */,
 				E264C7D819CC9CEA00D8DAF7 /* LAFImportListViewController.m in Sources */,
 				E2AD811319C69561008D33E1 /* XCSourceFile+Path.m in Sources */,
+				E2D78B1E19EFF0AC009C21B7 /* LAFProtocolProcessor.m in Sources */,
 				E2AD810919C69561008D33E1 /* DVTSourceTextStorage+Operations.m in Sources */,
+				E2D78B2219EFF4B9009C21B7 /* LAFIdentifier.m in Sources */,
 				E2AD810D19C69561008D33E1 /* NSObject+MHLogMethods.m in Sources */,
 				E2AD810819C69554008D33E1 /* XCWorkspace.m in Sources */,
 				E2AD811019C69561008D33E1 /* NSString+MHNSRange.m in Sources */,
 				E2AD810719C69554008D33E1 /* XCBuildSettings.m in Sources */,
+				E2D78B1A19EFF052009C21B7 /* LAFCategoryProcessor.m in Sources */,
 				E2AD810319C690AD008D33E1 /* LAFProjectHeaderCache.m in Sources */,
 				E2AD810F19C69561008D33E1 /* NSString+Files.m in Sources */,
+				E2D78B1619EFF046009C21B7 /* LAFClassProcessor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
