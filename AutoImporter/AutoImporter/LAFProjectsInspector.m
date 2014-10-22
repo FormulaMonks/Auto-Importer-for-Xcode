@@ -12,6 +12,7 @@
 #import "LAFProjectHeaderCache.h"
 #import "LAFImportListViewController.h"
 #import "LAFIDESourceCodeEditor.h"
+#import "LAFIdentifier.h"
 
 @interface LAFProjectsInspector () <LAFImportListViewControllerDelegate>
 @property (nonatomic, strong) NSMapTable *projectsByWorkspace;
@@ -206,13 +207,30 @@
 - (void)showImportList:(NSString *)searchString {
     NSMutableArray *items = [NSMutableArray array];
     NSArray *projects = [self projectsInCurrentWorkspace];
+    NSMutableSet *alreadyImported = [NSMutableSet set];
+    
+    [_editor cacheImports];
     for (LAFProjectHeaderCache *project in projects) {
-        [items addObjectsFromArray:[[project identifiers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
-        [items addObjectsFromArray:[[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+        NSArray *identifiers = [[project identifiers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        NSArray *headers = [[project headers] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        [items addObjectsFromArray:identifiers];
+        [items addObjectsFromArray:headers];
+        
+        for (LAFIdentifier *identifier in identifiers) {
+            if ([_editor hasImportedHeader:[project headerForIdentifier:identifier.name]]) {
+                [alreadyImported addObject:identifier];
+            }
+        }
+        for (LAFIdentifier *identifier in headers) {
+            if ([_editor hasImportedHeader:identifier.name]) {
+                [alreadyImported addObject:identifier];
+            }
+        }
     }
+    [_editor invalidateImportsCache];
     
     [LAFImportListViewController sharedInstance].delegate = self;
-    [LAFImportListViewController presentInView:[_editor view] items:items searchText:searchString];
+    [LAFImportListViewController presentInView:[_editor view] items:items alreadyImported:alreadyImported searchText:searchString];
 }
 
 

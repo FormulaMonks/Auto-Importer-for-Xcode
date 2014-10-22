@@ -45,7 +45,6 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 ## Roadmap
 
 - Read headers from frameworks.
-- Show already imported headers with lighter color.
 
 ## Misc
 

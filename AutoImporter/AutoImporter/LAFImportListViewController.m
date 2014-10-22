@@ -15,6 +15,7 @@
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) NSArray *alreadyImported;
 @property (nonatomic, strong) NSArray *filtered;
 @end
 
@@ -30,9 +31,10 @@
     return _viewController;
 }
 
-+ (instancetype)presentInView:(NSView *)view items:(NSArray *)items searchText:(NSString *)searchText {
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items alreadyImported:(NSMutableSet *)alreadyImported searchText:(NSString *)searchText {
     LAFImportListViewController *instance = [self sharedInstance];
     instance.items = items;
+    instance.alreadyImported = alreadyImported;
     instance.filtered = items;
 
     if (searchText) {
@@ -196,10 +198,12 @@
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     NSTextFieldCell *cell = aCell;
     LAFIdentifier *identifier = (LAFIdentifier *)cell.objectValue;
-    if ([identifier type] == LAFIdentifierTypeHeader) {
-        [cell setTextColor:[NSColor grayColor]];
-    } else {
+    if ([_alreadyImported containsObject:identifier]) {
+        [cell setTextColor:[NSColor lightGrayColor]];
+    } else if ([identifier type] == LAFIdentifierTypeHeader) {
         [cell setTextColor:[NSColor darkGrayColor]];
+    } else {
+        [cell setTextColor:[NSColor blackColor]];
     }
     
     if ([[aTableView selectedRowIndexes] containsIndex:rowIndex]) {

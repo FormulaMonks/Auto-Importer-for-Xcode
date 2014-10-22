@@ -14,10 +14,43 @@
 
 NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include).*[\",<].*[\",>]";
 
+@interface LAFIDESourceCodeEditor()
+
+@property (nonatomic, strong) NSMutableSet *importedCache;
+
+@end
+
 @implementation LAFIDESourceCodeEditor
 
+- (NSString *)importStatementFor:(NSString *)header {
+    return [NSString stringWithFormat:@"#import \"%@\"", header];
+}
+
+- (void)cacheImports {
+    [self invalidateImportsCache];
+    
+    if (!_importedCache) {
+        _importedCache = [NSMutableSet set];
+    }
+    
+    DVTSourceTextStorage *textStorage = [self currentTextStorage];
+    [textStorage.string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+        if ([self isImportString:line]) {
+            [_importedCache addObject:[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+        }
+    }];
+}
+
+- (void)invalidateImportsCache {
+    [_importedCache removeAllObjects];
+}
+
 - (LAFImportResult)importHeader:(NSString *)header {
-    return [self addImport:[NSString stringWithFormat:@"#import \"%@\"", header]];
+    return [self addImport:[self importStatementFor:header]];
+}
+
+- (BOOL)hasImportedHeader:(NSString *)header {
+    return [_importedCache containsObject:[self importStatementFor:header]];
 }
 
 - (NSView *)view {
@@ -73,8 +106,8 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 }
 
 - (LAFImportResult)addImport:(NSString *)statement {
-    DVTSourceTextStorage *textStorage = [self currentTextStorage];
     BOOL duplicate = NO;
+    DVTSourceTextStorage *textStorage = [self currentTextStorage];
     NSInteger lastLine = [self appropriateLine:textStorage statement:statement duplicate:&duplicate];
     
     if (lastLine != NSNotFound) {

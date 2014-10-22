@@ -20,6 +20,6 @@
 @property (nonatomic, weak) id<LAFImportListViewControllerDelegate> delegate;
 
 + (instancetype)sharedInstance;
-+ (instancetype)presentInView:(NSView *)view items:(NSArray *)items searchText:(NSString *)searchText;
++ (instancetype)presentInView:(NSView *)view items:(NSArray *)items alreadyImported:(NSMutableSet *)alreadyImported searchText:(NSString *)searchText;
 
 @end

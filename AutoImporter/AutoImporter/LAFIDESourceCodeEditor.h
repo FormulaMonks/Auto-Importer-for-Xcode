@@ -17,6 +17,12 @@ typedef enum {
 
 @interface LAFIDESourceCodeEditor : NSObject
 
+- (void)cacheImports;
+- (void)invalidateImportsCache;
+
+// need to call cacheImports before
+- (BOOL)hasImportedHeader:(NSString *)header;
+
 - (LAFImportResult)importHeader:(NSString *)header;
 - (void)showAboveCaret:(NSString *)text color:(NSColor *)color;
 - (NSString *)selectedText;

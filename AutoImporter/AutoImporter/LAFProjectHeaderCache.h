@@ -15,6 +15,7 @@
 // array of LAFIdentifier
 @property (nonatomic, readonly) NSArray *identifiers;
 
+// array of LAFIdentifier
 @property (nonatomic, readonly) NSArray *headers;
 
 - (instancetype)initWithProjectPath:(NSString *)filePath;
