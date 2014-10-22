@@ -15,7 +15,7 @@
 @interface LAFImportListViewController () <NSPopoverDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
 @property (nonatomic, strong) NSPopover *popover;
 @property (nonatomic, strong) NSArray *items;
-@property (nonatomic, strong) NSArray *alreadyImported;
+@property (nonatomic, strong) NSMutableSet *alreadyImported;
 @property (nonatomic, strong) NSArray *filtered;
 @end
 
@@ -200,10 +200,8 @@
     LAFIdentifier *identifier = (LAFIdentifier *)cell.objectValue;
     if ([_alreadyImported containsObject:identifier]) {
         [cell setTextColor:[NSColor lightGrayColor]];
-    } else if ([identifier type] == LAFIdentifierTypeHeader) {
-        [cell setTextColor:[NSColor darkGrayColor]];
     } else {
-        [cell setTextColor:[NSColor blackColor]];
+        [cell setTextColor:[NSColor darkGrayColor]];
     }
     
     if ([[aTableView selectedRowIndexes] containsIndex:rowIndex]) {
