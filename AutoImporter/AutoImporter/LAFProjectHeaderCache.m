@@ -148,7 +148,10 @@
     NSMutableSet *missingFiles = [NSMutableSet set];
     for (XCSourceFile *header in project.headerFiles) {
         if (![self processHeaderPath:[header fullPath]]) {
-            [missingFiles addObject:[[header pathRelativeToProjectRoot] lastPathComponent]];
+            NSString *file = [[header pathRelativeToProjectRoot] lastPathComponent];
+            if (file) {
+                [missingFiles addObject:file];
+            }
         }
     }
     
