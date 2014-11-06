@@ -23,7 +23,7 @@ Quickly import your headers on the fly while typing.
 
 - Clone and build the project, then restart Xcode.
 
-NOTE: If you find a crash while typing the shortcut, it may be because of a bad bundle build, so delete ~/Library/Application Support/Alcatraz/Plug-ins/Auto-Importer and ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer and reinstall from scratch.
+NOTE: If you find a crash while typing the shortcut, it may be because of a bad bundle build, so delete `~/Library/Application Support/Alcatraz/Plug-ins/Auto-Importer` and `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer` and reinstall from scratch.
 
 ## Usage
 
