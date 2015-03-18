@@ -96,12 +96,12 @@
 		E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDESourceCodeEditor.m; sourceTree = "<group>"; };
 		E2631D0B19DC85E900C3B141 /* LAFIDENotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIDENotificationHandler.h; sourceTree = "<group>"; };
 		E2631D0C19DC85E900C3B141 /* LAFIDENotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDENotificationHandler.m; sourceTree = "<group>"; };
-		E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LAFImportListView.xib; sourceTree = "<group>"; };
+		E264C7D219CC9BD700D8DAF7 /* LAFImportListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LAFImportListView.xib; path = AutoImporter/LAFImportListView.xib; sourceTree = SOURCE_ROOT; };
 		E264C7D519CC9CEA00D8DAF7 /* LAFImportListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFImportListViewController.h; sourceTree = "<group>"; };
 		E264C7D619CC9CEA00D8DAF7 /* LAFImportListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListViewController.m; sourceTree = "<group>"; };
 		E264C7D919CC9DEC00D8DAF7 /* LAFImportListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFImportListView.h; sourceTree = "<group>"; };
 		E264C7DA19CC9DEC00D8DAF7 /* LAFImportListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFImportListView.m; sourceTree = "<group>"; };
-		E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = AutoImporter.xcplugin; path = "Auto-Importer.xcplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E26F40DC19C0B95500527019 /* Auto-Importer.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auto-Importer.xcplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E26F40DF19C0B95500527019 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E26F40E119C0B95500527019 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E26F40E519C0B95500527019 /* AutoImporter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AutoImporter-Info.plist"; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 		E29ED2A919C9FA65002EF155 /* LAFProjectsInspectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFProjectsInspectorTests.m; sourceTree = "<group>"; };
 		E29ED2AB19C9FA91002EF155 /* LAFTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFTestCase.h; sourceTree = "<group>"; };
 		E29ED2AC19C9FA91002EF155 /* LAFTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFTestCase.m; sourceTree = "<group>"; };
-		E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = AutoImporterTests.xctest; path = "Auto-ImporterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2AD80EF19C68DF8008D33E1 /* Auto-ImporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auto-ImporterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2AD80F019C68DF8008D33E1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E2AD80F419C68DF8008D33E1 /* AutoImporterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AutoImporterTests-Info.plist"; sourceTree = "<group>"; };
 		E2AD80F619C68DF8008D33E1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -207,8 +207,8 @@
 		E26F40DD19C0B95500527019 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */,
-				E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */,
+				E26F40DC19C0B95500527019 /* Auto-Importer.xcplugin */,
+				E2AD80EF19C68DF8008D33E1 /* Auto-ImporterTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -393,7 +393,7 @@
 			);
 			name = "Auto-Importer";
 			productName = AutoImporter;
-			productReference = E26F40DC19C0B95500527019 /* AutoImporter.xcplugin */;
+			productReference = E26F40DC19C0B95500527019 /* Auto-Importer.xcplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 		E2AD80EE19C68DF8008D33E1 /* Auto-ImporterTests */ = {
@@ -413,7 +413,7 @@
 			);
 			name = "Auto-ImporterTests";
 			productName = AutoImporterTests;
-			productReference = E2AD80EF19C68DF8008D33E1 /* AutoImporterTests.xctest */;
+			productReference = E2AD80EF19C68DF8008D33E1 /* Auto-ImporterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
