@@ -36,7 +36,7 @@
     
     if (![instance currentListView]) {
         NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = [NSString stringWithFormat:@"Failed to load nib file. Try deleting $HOME/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer.xcplugin and then reinstall the plugin"];
+        alert.messageText = [NSString stringWithFormat:@"Failed to load nib file. Try deleting '$HOME/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer.xcplugin' AND '$HOME/library/Developer/Xcode/DerivedData/*' and then reinstall the plugin"];
         alert.alertStyle = NSWarningAlertStyle;
         [alert beginSheetModalForWindow:[NSApp keyWindow] completionHandler:nil];
 

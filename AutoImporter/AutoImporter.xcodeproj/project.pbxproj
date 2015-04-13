@@ -90,7 +90,8 @@
 
 /* Begin PBXFileReference section */
 		254E2E54B2C942A493C01F55 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F308B48C12848EEB802C9C3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		4E530B97FAF5EFF3B02DAA89 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		845E8E503B30B9CA14DF168F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E22C5B3619DD842900F11123 /* LAFLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFLogger.h; sourceTree = "<group>"; };
 		E22C5B3719DDB27C00F11123 /* LAFIDESourceCodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAFIDESourceCodeEditor.h; sourceTree = "<group>"; };
 		E22C5B3819DDB27C00F11123 /* LAFIDESourceCodeEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LAFIDESourceCodeEditor.m; sourceTree = "<group>"; };
@@ -193,6 +194,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C036A8EE277DF43B5ADBD288 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4E530B97FAF5EFF3B02DAA89 /* Pods.debug.xcconfig */,
+				845E8E503B30B9CA14DF168F /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		E26F40D319C0B95500527019 = {
 			isa = PBXGroup;
 			children = (
@@ -200,7 +210,7 @@
 				E2AD80F219C68DF8008D33E1 /* AutoImporterTests */,
 				E26F40DE19C0B95500527019 /* Frameworks */,
 				E26F40DD19C0B95500527019 /* Products */,
-				2F308B48C12848EEB802C9C3 /* Pods.xcconfig */,
+				C036A8EE277DF43B5ADBD288 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -483,7 +493,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		63FB692D67944E09B153F967 /* Check Pods Manifest.lock */ = {
@@ -528,7 +538,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -710,7 +720,7 @@
 		};
 		E26F40F019C0B95500527019 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
+			baseConfigurationReference = 4E530B97FAF5EFF3B02DAA89 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
@@ -726,7 +736,7 @@
 		};
 		E26F40F119C0B95500527019 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
+			baseConfigurationReference = 845E8E503B30B9CA14DF168F /* Pods.release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
@@ -742,7 +752,7 @@
 		};
 		E2AD80FD19C68DF8008D33E1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
+			baseConfigurationReference = 4E530B97FAF5EFF3B02DAA89 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -767,7 +777,7 @@
 		};
 		E2AD80FE19C68DF8008D33E1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F308B48C12848EEB802C9C3 /* Pods.xcconfig */;
+			baseConfigurationReference = 845E8E503B30B9CA14DF168F /* Pods.release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (

@@ -2,4 +2,4 @@ platform :osx, "10.9"
 
 pod 'XcodeEditor'
 
-link_with ['AutoImporter', 'AutoImporterTests']
+link_with ['Auto-Importer', 'Auto-ImporterTests']

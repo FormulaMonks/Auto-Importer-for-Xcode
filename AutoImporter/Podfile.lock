@@ -1,10 +1,10 @@
 PODS:
-  - XcodeEditor (1.6)
+  - XcodeEditor (1.6.2)
 
 DEPENDENCIES:
   - XcodeEditor
 
 SPEC CHECKSUMS:
-  XcodeEditor: 0214318e7bece3c9b1db81d128b84d1decb0dd63
+  XcodeEditor: a1c8786a09a8ccf08779abeb4ba0a1b6347e5647
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.36.3
