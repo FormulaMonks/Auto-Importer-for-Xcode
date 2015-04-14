@@ -43,6 +43,10 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 - When two workspaces (and thus two windows) are open, there is no distinction between workspaces and all identifiers are shown on the listing.
 - Avoid using 'InstallApplicationEventHandler' since it prevent other plugins to use it.
 
+## Dependencies
+
+- **XcodeEditor** https://github.com/jasperblues/XcodeEditor
+
 ## Roadmap
 
 - Read headers from frameworks.
