@@ -23,8 +23,6 @@ Quickly import your headers on the fly without having to manually go to the top 
 
 - Clone and build the project, then restart Xcode.
 
-NOTE: If you find a crash while typing the shortcut, it may be because of a bad bundle build, so delete `~/Library/Application Support/Alcatraz/Plug-ins/Auto-Importer` and `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer` and reinstall from scratch.
-
 ## Usage
 
 - ⌘ + ctrl + H after selecting some text (or you can have no selection at all)
@@ -41,8 +39,13 @@ Run `rm -r ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/AutoIm
 
 ## Known Issues
 
+- If you get an error alert while typing the shortcut, it may be because of a bad bundle build, so delete `~/Library/Application Support/Alcatraz/Plug-ins/Auto-Importer`, `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer` and `~/library/Developer/Xcode/DerivedData/*` and reinstall from scratch.
 - When two workspaces (and thus two windows) are open, there is no distinction between workspaces and all identifiers are shown on the listing.
 - Avoid using 'InstallApplicationEventHandler' since it prevent other plugins to use it.
+
+## Dependencies
+
+- **XcodeEditor** https://github.com/jasperblues/XcodeEditor
 
 ## Roadmap
 

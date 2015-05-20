@@ -33,6 +33,16 @@
 
 + (instancetype)presentInView:(NSView *)view items:(NSArray *)items alreadyImported:(NSMutableSet *)alreadyImported searchText:(NSString *)searchText {
     LAFImportListViewController *instance = [self sharedInstance];
+    
+    if (![instance currentListView]) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = [NSString stringWithFormat:@"Failed to load nib file. Try deleting '$HOME/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Auto-Importer.xcplugin' AND '$HOME/library/Developer/Xcode/DerivedData/*' and then reinstall the plugin"];
+        alert.alertStyle = NSWarningAlertStyle;
+        [alert beginSheetModalForWindow:[NSApp keyWindow] completionHandler:nil];
+
+        return nil;
+    }
+    
     instance.items = items;
     instance.alreadyImported = alreadyImported;
     instance.filtered = items;
@@ -82,7 +92,17 @@
 
 - (void)loadImportListView {
     NSBundle *bundle = [NSBundle bundleForClass:[LAFImportListView class]];
-    NSViewController *contentViewController = [[NSViewController alloc] initWithNibName:@"LAFImportListView" bundle:bundle];
+    
+    NSString *nibName = @"LAFImportListView";
+    
+    NSString *path = [bundle pathForResource:nibName ofType:@"nib"];
+    if (!path) {
+        NSLog(@"Failed to load %@ nib", nibName);
+        
+        return;
+    }
+    
+    NSViewController *contentViewController = [[NSViewController alloc] initWithNibName:nibName bundle:bundle];
     
     NSPopover *popover = [[NSPopover alloc] init];
     popover.delegate = self;
