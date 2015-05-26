@@ -67,8 +67,13 @@
         NSString *matchString = [method substringWithRange:matchRange];
         NSString *matchPart = [matchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSString *partWithoutSpaces = [matchPart stringByReplacingOccurrencesOfString:@" " withString:@""];
-        if ([partWithoutSpaces hasSuffix:@";"] && [signature length] > 0) {
-            return; // it's not the first part so it already has a name
+        if ([partWithoutSpaces hasSuffix:@";"]) {
+            if ([signature length] > 0) {
+                return; // it's not the first part so it already has a name
+            } else {
+                // remove ';' since we're not interested in it
+                partWithoutSpaces = [partWithoutSpaces substringToIndex:partWithoutSpaces.length - 1];
+            }
         }
         
         [signature appendString:partWithoutSpaces];
