@@ -14,7 +14,6 @@
 static LAFAutoImporter *sharedPlugin;
 
 @interface LAFAutoImporter()
-@property (nonatomic, strong) NSBundle *bundle;
 @end
 
 @implementation LAFAutoImporter
@@ -40,23 +39,25 @@ static OSStatus lafHotKeyHandler(EventHandlerCallRef nextHandler, EventRef anEve
     NSString *currentApplicationName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
     if ([currentApplicationName isEqual:@"Xcode"]) {
         dispatch_once(&onceToken, ^{
-            sharedPlugin = [[self alloc] initWithBundle:plugin];
+            sharedPlugin = [[self alloc] init];
         });
     }
 }
 
-- (id)initWithBundle:(NSBundle *)plugin
-{
+- (instancetype)init {
     if (self = [super init]) {
-        // init inspector
-        [LAFIDENotificationHandler sharedHandler];
-        
-        // reference to plugin's bundle, for resource acccess
-        self.bundle = plugin;
-        
-        [self loadKeyboardHandler];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidFinishLaunching:)
+                                                     name:NSApplicationDidFinishLaunchingNotification
+                                                   object:nil];
     }
     return self;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification*)noti{
+    // init inspector
+    [LAFIDENotificationHandler sharedHandler];
+    [self loadKeyboardHandler];
 }
 
 - (void)loadKeyboardHandler {
