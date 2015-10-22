@@ -1,5 +1,7 @@
 # Auto Importer for Xcode
 
+[![CI Status](https://travis-ci.org/citrusbyte/Auto-Importer-for-Xcode.svg)](https://travis-ci.org/citrusbyte/Auto-Importer-for-Xcode)
+
 Quickly import your headers on the fly without having to manually go to the top of your file and type the import statement.
 
 ## Features
