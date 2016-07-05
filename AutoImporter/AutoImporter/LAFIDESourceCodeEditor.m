@@ -22,9 +22,18 @@ NSString * const LAFAddImportOperationImportRegexPattern = @"^#.*(import|include
 
 @implementation LAFIDESourceCodeEditor
 
+// changed to support C++, it would be better though to check for the actual files
+// if there is a .cpp file -> use include
 - (NSString *)importStatementFor:(NSString *)header {
-    return [NSString stringWithFormat:@"#import \"%@\"", header];
+    NSTextView *textView = [MHXcodeDocumentNavigator currentSourceCodeTextView];
+    NSRange range = [textView.string rangeOfString: @"#import"];
+    if (range.length > 0) {
+        return [NSString stringWithFormat:@"#import \"%@\"", header];
+    } else {
+        return [NSString stringWithFormat:@"#include \"%@\"", header];
+    }
 }
+
 
 - (void)cacheImports {
     [self invalidateImportsCache];
